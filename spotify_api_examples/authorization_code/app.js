@@ -9,12 +9,13 @@
 
 var express = require('express'); // Express web server framework
 var request = require('request'); // "Request" library
+var cors = require('cors');
 var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 
-var client_id = 'CLIENT_ID'; // Your client id
-var client_secret = 'CLIENT_SECRET'; // Your secret
-var redirect_uri = 'REDIRECT_URI'; // Your redirect uri
+var client_id = '894eb52a1f62408eb32393a4aa1f38f9'; // Your client id
+var client_secret = '85723a2bf66e40098c146fd74c1d99d0'; // Your secret
+var redirect_uri = 'http://localhost:8888/callback'; // Your redirect uri
 
 /**
  * Generates a random string containing numbers and letters
@@ -36,6 +37,7 @@ var stateKey = 'spotify_auth_state';
 var app = express();
 
 app.use(express.static(__dirname + '/public'))
+   .use(cors())
    .use(cookieParser());
 
 app.get('/login', function(req, res) {
