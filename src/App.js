@@ -1,11 +1,9 @@
 import "./App.scss";
 import axios from "axios";
-import {
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import Dashboard from "./Dashboard";
 
 /**
  * Obtains parameters from the hash of the URL
@@ -38,7 +36,7 @@ function generateRandomString(length) {
   return text;
 }
 
-var stateKey = "spotify_auth_state";
+const stateKey = "spotify_auth_state";
 
 const AuthCallback = () => {
   const params = getHashParams();
@@ -48,10 +46,9 @@ const AuthCallback = () => {
 
   useEffect(() => {
     setAuth(params);
+    localStorage.setItem("auth", JSON.stringify(params));
     navigate("/");
-  }, [params]);
-  console.log(setAuth);
-  console.log(params);
+  }, [navigate, params, setAuth]);
 };
 
 const authorise = () => {
@@ -74,16 +71,19 @@ const authorise = () => {
 };
 
 const Content = () => {
-  const auth = useContext(AuthCred);
-  console.log(auth);
+  const storageAuth = JSON.parse(localStorage.getItem("auth"));
 
-  const getTracks = async () => {
-    axios.get("http://localhost:9000/album2track");
-  };
+  const { auth, setAuth } = useContext(AuthCred);
+
+  useEffect(() => {
+    if (storageAuth?.access_token && (!auth || !auth?.access_token)) {
+      setAuth(storageAuth);
+    }
+  }, [auth, setAuth, storageAuth]);
 
   return (
     <div className="App">
-      <button onClick={getTracks}>get tracks</button>
+      {storageAuth.access_token && <Dashboard />}
       <button onClick={authorise}>auth</button>
     </div>
   );
@@ -100,11 +100,7 @@ const router = createBrowserRouter([
 export const AuthCred = createContext(null);
 
 function App() {
-  const params = useParams();
-
   const [auth, setAuth] = useState();
-
-  console.log(params);
 
   return (
     <AuthCred.Provider value={{ auth, setAuth }}>
