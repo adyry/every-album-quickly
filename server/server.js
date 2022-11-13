@@ -1,24 +1,31 @@
 const express = require("express");
 const path = require("path");
 const fs = require("fs");
+const cors = require("cors");
 const app = express();
 const axios = require("axios");
 require("dotenv").config();
-var request = require('request'); // "Request" library
+var request = require("request"); // "Request" library
 const PORT = process.env.PORT || 9000;
 
-
+var corsOptions = {
+  origin: ["http://localhost:3000"],
+};
 
 // your application requests authorization
 var authOptions = {
-  url: 'https://accounts.spotify.com/api/token',
+  url: "https://accounts.spotify.com/api/token",
   headers: {
-    'Authorization': 'Basic ' + (new Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64'))
+    Authorization:
+      "Basic " +
+      new Buffer.from(
+        process.env.SPOTIFY_CLIENT_ID + ":" + process.env.SPOTIFY_CLIENT_SECRET
+      ).toString("base64"),
   },
   form: {
-    grant_type: 'client_credentials'
+    grant_type: "client_credentials",
   },
-  json: true
+  json: true,
 };
 
 // albums - max 20
@@ -236,23 +243,31 @@ const mockAlbumsList = [
   "spotify:album:6ZaPNal2QY68dAYPZPaESU",
   "spotify:album:4EPwEa39LxGcRI9LSM2jOL",
   "spotify:album:1BbQwgyJRnuA9VGx43f5Ku",
-  "spotify:album:54VghnSD6AGCXizk5GEroL"
-].map(v => v.replace('spotify:album:', ''));
+  "spotify:album:54VghnSD6AGCXizk5GEroL",
+].map((v) => v.replace("spotify:album:", ""));
 
 const albumPackets = [];
-for (let i=0; i * 20 < mockAlbumsList.length; i++) {
-   albumPackets[i] = mockAlbumsList.slice(20 * i, 20 + 20 * i)
+for (let i = 0; i * 20 < mockAlbumsList.length; i++) {
+  albumPackets[i] = mockAlbumsList.slice(20 * i, 20 + 20 * i);
 }
 
 const extractTracksFromAlbums = async (token, albumsList) => {
-  const albumsData = (await Promise.all(albumsList.map(list => axios.get(`https://api.spotify.com/v1/albums?ids=${list.join(',')}`, {headers: {
-      'Authorization': 'Bearer ' + token
-    }}))).then(r => r.map(v => v.data.albums))).flat();
+  const albumsData = (
+    await Promise.all(
+      albumsList.map((list) =>
+        axios.get(`https://api.spotify.com/v1/albums?ids=${list.join(",")}`, {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+      )
+    ).then((r) => r.map((v) => v.data.albums))
+  ).flat();
 
-    const trackLists = albumsData.map(v => v.tracks);
-    const tracks = trackLists.map(v => v.items).flat();
-    return tracks.map(v => v.uri + '\n');
-}
+  const trackLists = albumsData.map((v) => v.tracks);
+  const tracks = trackLists.map((v) => v.items).flat();
+  return tracks.map((v) => v.uri + "\n");
+};
 
 app.listen(PORT, (error) => {
   if (error) {
@@ -261,28 +276,36 @@ app.listen(PORT, (error) => {
   console.log("listening on " + PORT + "...");
 });
 
-const indexPath = path.resolve(__dirname, "..", "build", "index.html");
+// const indexPath = path.resolve(__dirname, "..", "build", "index.html");
 
 app.use(
   express.static(path.resolve(__dirname, "web", "build"), { maxAge: "30d" })
 );
 
-
 app.get(/album2track/, async (req, res, next) => {
   // todo: move auth to the other endpoint
   const resp = request.post(authOptions, async (error, response, body) => {
-    const tracks = await extractTracksFromAlbums(body.access_token, albumPackets);
-    return res.send(tracks)
+    const tracks = await extractTracksFromAlbums(
+      body.access_token,
+      albumPackets
+    );
+    return res.send(tracks);
   });
 });
 
-
-app.get("*", (req, res, next) => {
-  fs.readFile(indexPath, "utf8", (err, htmlData) => {
-    if (err) {
-      console.error("Error during file reading", err);
-      return res.status(404).end();
-    }
-    return res.send(htmlData);
-  });
+app.get(/scrape/, cors(corsOptions), async (req, res, next) => {
+  const response = await axios.get(
+    "https://everynoise.com/new_releases_by_genre.cgi?genre=new%20isolationism%2Coutsider%20house%2Cfloat%20house%2Cfluxwork%2Cambient%20idm%2Cexperimental%20ambient%2Cambient%20techno%2Ctechno%2Cexperimental%20techno%2Cminimal%20techno%2Cambient%20dub%20techno%2Cdub%20techno%2Cmicrohouse%2Cbass%20music%2Cwonky%2Cclassic%20dubstep%2Cfuture%20garage%2Cdeep%20dubstep%2Cexperimental%20electronic%2Cuk%20experimental%20electronic%2Crussian%20experimental%20electronic%2Cexperimental%20dubstep%2Cexperimental%20folk%2Cexperimental%20house%2Cghettotech%2Cfootwork%2Cchinese%20experimental%2Cexperimental%20synth%2Cmodular%20synth%2Cintelligent%20dance%20music%2Cexperimental%20club%2Cgrimewave%2Cillbient%2Csound%20art&region=US&date=20220506&hidedupes=on&style=list"
+  );
+  return res.send(response.data);
 });
+
+// app.get("*", (req, res, next) => {
+//   fs.readFile(indexPath, "utf8", (err, htmlData) => {
+//     if (err) {
+//       console.error("Error during file reading", err);
+//       return res.status(404).end();
+//     }
+//     return res.send(htmlData);
+//   });
+// });

@@ -301,8 +301,16 @@ const Dashboard = () => {
     setAlbums(result);
   };
 
+  const scrapeEveryNoise = async () => {
+    const { data } = await axios.get("http://localhost:9000/scrape");
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(data, "text/html");
+    console.log(doc);
+  };
+
   return (
     <div className="dashboard">
+      <button onClick={scrapeEveryNoise}>scrape</button>
       <button onClick={getAlbums}>get tracks</button>
       <div className="albums-list">
         {albums?.map((album) => (
