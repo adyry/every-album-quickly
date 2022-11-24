@@ -83,7 +83,7 @@ const Content = () => {
 
   return (
     <div className="App">
-      {storageAuth.access_token && <Dashboard />}
+      {storageAuth?.access_token && <Dashboard />}
       <button onClick={authorise}>auth</button>
     </div>
   );
