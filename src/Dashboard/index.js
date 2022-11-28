@@ -25,6 +25,7 @@ const TrackTile = ({
   track_number,
   uri,
   setQueue,
+  selected,
 }) => {
   const audioRef = createRef();
 
@@ -58,6 +59,7 @@ const TrackTile = ({
         onFocus={playPreview}
         onBlur={stopPreview}
         onChange={addTrack}
+        checked={selected}
       />
       <audio ref={audioRef} src={preview_url} preload={"none"} />
     </div>
@@ -65,8 +67,17 @@ const TrackTile = ({
 };
 
 const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
+  const [allSelected, setAllSelected] = useState(false);
+
+  const onAlbumKeyPress = (e) => {
+    console.log(e.key);
+    if (e.key === "a") {
+      setAllSelected(true);
+    }
+  };
+
   return (
-    <div className="album-tile">
+    <div className="album-tile" onKeyPress={onAlbumKeyPress}>
       <div>
         {artists.map(
           ({ name, id, external_urls: { spotify: artist_link } }) => name
@@ -83,6 +94,7 @@ const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
             {...singleTrack}
             key={singleTrack.uri}
             setQueue={setQueue}
+            selected={allSelected}
           />
         ))}
       </div>
@@ -92,7 +104,7 @@ const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
 
 const date = "20220107";
 const dayJSdate = dayjs(date);
-const weeks = 44;
+const weeks = 36;
 const finalDays = dayJSdate.add(weeks, "weeks").format("YYYYMMDD");
 
 const Dashboard = () => {
