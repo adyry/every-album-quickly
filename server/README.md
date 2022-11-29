@@ -1,2 +1,0 @@
-# Every Album Quickly
-An application utilising Spotify API meant for record digging on spotify. Create batches of all tracks from all releases for the given genre in the given time, next quickly browse through them to save them to the spotify playlist. Accessible & Responsive hybrid of everynoise and discoverquickly with a few additional features.
