@@ -3,6 +3,8 @@ import axios from "axios";
 import { createRef, useContext, useState } from "react";
 import { AuthCred } from "../App";
 import dayjs from "dayjs";
+import { Autocomplete, TextField } from "@mui/material";
+import allGenres from "../all_genres.json";
 
 const extractTracksFromAlbums = async (token, albumsList) => {
   return (
@@ -111,21 +113,21 @@ const Dashboard = () => {
   const [albums, setAlbums] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [queue, setQueue] = useState([]);
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const { auth } = useContext(AuthCred);
+  const scrapeUrl = encodeURI(
+    `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
+      ","
+    )}&region=US&date=${finalDays}&hidedupes=on&style=list`
+  ).replace(",", "%2C");
 
-  const getAlbums = async (albumPackets) => {
-    const result = await extractTracksFromAlbums(
-      auth.access_token,
-      albumPackets
-    );
-
-    setAlbums(result);
-  };
+  const getAlbums = async (albumPackets) =>
+    await extractTracksFromAlbums(auth.access_token, albumPackets);
 
   const scrapeEveryNoise = async () => {
     setIsLoading(true);
     const payload = {
-      date: finalDays,
+      scrapeUrl,
     };
     const { data } = await axios.post("http://localhost:9000/scrape", payload);
     const parser = new DOMParser();
@@ -137,16 +139,32 @@ const Dashboard = () => {
     for (let i = 0; i * 20 < tracks.length; i++) {
       albumPackets[i] = tracks.slice(20 * i, 20 + 20 * i);
     }
-    await getAlbums(albumPackets);
+    const albums = await getAlbums(albumPackets);
+    setAlbums(albums);
     setIsLoading(false);
+  };
+
+  const onGenreChange = (e, data) => {
+    setSelectedGenres(data);
   };
 
   return (
     <div className="dashboard">
-      {isLoading && "Loading..."}
-      {finalDays}
+      {isLoading && "Scraping everynoise... might take a while"}
+      <Autocomplete
+        onChange={onGenreChange}
+        selectOnFocus
+        blurOnSelect
+        filterSelectedOptions
+        autoSelect
+        handleHomeEndKeys
+        multiple
+        options={allGenres}
+        renderInput={(params) => (
+          <TextField {...params} placeholder={"Choose genres"} />
+        )}
+      />
       <button onClick={scrapeEveryNoise}>scrape</button>
-      <button onClick={getAlbums}>get tracks</button>
       <div className="albums-list">
         {albums?.map((album) => (
           <AlbumTile key={album.id} {...album} setQueue={setQueue} />

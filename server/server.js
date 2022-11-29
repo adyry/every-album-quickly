@@ -64,12 +64,8 @@ app.use(
   express.static(path.resolve(__dirname, "web", "build"), { maxAge: "30d" })
 );
 
-const genre =
-  "genre=new%20isolationism%2Coutsider%20house%2Cfloat%20house%2Cfluxwork%2Cambient%20idm%2Cexperimental%20ambient%2Cambient%20techno%2Ctechno%2Cexperimental%20techno%2Cminimal%20techno%2Cambient%20dub%20techno%2Cdub%20techno%2Cmicrohouse%2Cbass%20music%2Cwonky%2Cclassic%20dubstep%2Cfuture%20garage%2Cdeep%20dubstep%2Cexperimental%20electronic%2Cuk%20experimental%20electronic%2Crussian%20experimental%20electronic%2Cexperimental%20dubstep%2Cexperimental%20folk%2Cexperimental%20house%2Cghettotech%2Cfootwork%2Cchinese%20experimental%2Cexperimental%20synth%2Cmodular%20synth%2Cintelligent%20dance%20music%2Cexperimental%20club%2Cgrimewave%2Cillbient%2Csound%20art";
 app.post(/scrape/, cors(), async (req, res, next) => {
-  const response = await axios.get(
-    `https://everynoise.com/new_releases_by_genre.cgi?${genre}&region=US&date=${req.body.date}&hidedupes=on&style=list`
-  );
+  const response = await axios.get(req.body.scrapeUrl);
   return res.send(response.data);
 });
 
