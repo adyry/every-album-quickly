@@ -3,8 +3,10 @@ import axios from "axios";
 import { createRef, useContext, useState } from "react";
 import { AuthCred } from "../App";
 import dayjs from "dayjs";
-import { Autocomplete, TextField } from "@mui/material";
-import allGenres from "../all_genres.json";
+import { Autocomplete, FormControl, TextField } from "@mui/material";
+import { allGenres, myGenres } from "../constants.js";
+import { useDispatch, useSelector } from "react-redux";
+import { selectTrack } from "../store/selectedSlice";
 
 const extractTracksFromAlbums = async (token, albumsList) => {
   return (
@@ -20,35 +22,36 @@ const extractTracksFromAlbums = async (token, albumsList) => {
   ).flat();
 };
 
-const TrackTile = ({
-  artists,
-  name,
-  preview_url,
-  track_number,
-  uri,
-  setQueue,
-  selected,
-}) => {
+const TrackTile = ({ artists, name, preview_url, track_number, uri }) => {
+  const dispatch = useDispatch();
+  const checked = useSelector((state) => state.selected.indexOf(uri) !== -1);
+  // const [audio, setAudio] = useState(false);
   const audioRef = createRef();
-
+  // const playPromise = createRef();
   const playPreview = () => {
+    // setAudio(true);
+    // audioRef.current.src = preview_url;
+    // playPromise.current = audioRef.current.play();
     audioRef.current.play();
   };
 
+  // useEffect(() => {
+  //   if (audioRef.current) {
+  //     audioRef.current.play();
+  //   }
+  // }, [audioRef]);
+
   const stopPreview = () => {
+    // setAudio(false);
+    // console.log(playPromise.current);
+
     audioRef.current.pause();
+
+    // console.log(audioRef, playPromise.current);
   };
 
   const addTrack = (e) => {
-    if (e.target.checked) {
-      setQueue((prev) => [...prev, e.target.value]);
-    } else {
-      setQueue((prev) => {
-        const newQue = [...prev];
-        newQue.splice(prev.findIndex((item) => item === e.target.value));
-        return newQue;
-      });
-    }
+    dispatch(selectTrack({ uri: e.target.value, checked: e.target.checked }));
   };
 
   return (
@@ -61,20 +64,23 @@ const TrackTile = ({
         onFocus={playPreview}
         onBlur={stopPreview}
         onChange={addTrack}
-        checked={selected}
+        checked={checked}
       />
-      <audio ref={audioRef} src={preview_url} preload={"none"} />
+      {/*{audio && (*/}
+      <audio ref={audioRef} src={preview_url} preload="auto" key={uri} />
+      {/*)}*/}
     </div>
   );
 };
 
-const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
-  const [allSelected, setAllSelected] = useState(false);
+const AlbumTile = ({ images, tracks, name, artists, label }) => {
+  const dispatch = useDispatch();
 
   const onAlbumKeyPress = (e) => {
-    console.log(e.key);
     if (e.key === "a") {
-      setAllSelected(true);
+      tracks.items.forEach((track) => {
+        dispatch(selectTrack({ uri: track.uri, checked: true }));
+      });
     }
   };
 
@@ -88,16 +94,11 @@ const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
       </div>
       <div>label: {label}</div>
       <div>
-        <img src={images[2].url} />{" "}
+        <img src={images[2].url} alt="cover" />{" "}
       </div>
       <div>
         {tracks.items.map((singleTrack) => (
-          <TrackTile
-            {...singleTrack}
-            key={singleTrack.uri}
-            setQueue={setQueue}
-            selected={allSelected}
-          />
+          <TrackTile {...singleTrack} key={singleTrack.uri} />
         ))}
       </div>
     </div>
@@ -106,23 +107,41 @@ const AlbumTile = ({ images, tracks, name, artists, label, setQueue }) => {
 
 const date = "20220107";
 const dayJSdate = dayjs(date);
-const weeks = 36;
-const finalDays = dayJSdate.add(weeks, "weeks").format("YYYYMMDD");
 
 const Dashboard = () => {
+  const selected = useSelector((state) => state.selected);
   const [albums, setAlbums] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [queue, setQueue] = useState([]);
-  const [selectedGenres, setSelectedGenres] = useState([]);
+
+  const [selectedGenres, setSelectedGenres] = useState(myGenres);
+  const [week, setWeek] = useState(36);
   const { auth } = useContext(AuthCred);
+  const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
   const scrapeUrl = encodeURI(
     `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
       ","
-    )}&region=US&date=${finalDays}&hidedupes=on&style=list`
+    )}&region=US&date=${weekFormatted}&hidedupes=on&style=list`
   ).replace(",", "%2C");
 
   const getAlbums = async (albumPackets) =>
     await extractTracksFromAlbums(auth.access_token, albumPackets);
+
+  // add album URIs into trakcs
+  const getFullAlbumsUtil = async (albumURIArray) => {
+    const albumPackets = [];
+    for (let i = 0; i * 20 < albumURIArray.length; i++) {
+      albumPackets[i] = albumURIArray.slice(20 * i, 20 + 20 * i);
+    }
+    const albumsResponse = await getAlbums(albumPackets);
+    console.log(
+      `${albumsResponse
+        .map((a) => a.tracks.items.map((t) => t.uri))
+        .flat()
+        .join("\n")}`
+    );
+  };
+
+  window.getFullAlbums = getFullAlbumsUtil;
 
   const scrapeEveryNoise = async () => {
     setIsLoading(true);
@@ -148,6 +167,10 @@ const Dashboard = () => {
     setSelectedGenres(data);
   };
 
+  const onWeekChange = (e) => {
+    setWeek(parseInt(e.target.value));
+  };
+
   return (
     <div className="dashboard">
       {isLoading && "Scraping everynoise... might take a while"}
@@ -160,17 +183,22 @@ const Dashboard = () => {
         handleHomeEndKeys
         multiple
         options={allGenres}
+        defaultValue={selectedGenres}
         renderInput={(params) => (
           <TextField {...params} placeholder={"Choose genres"} />
         )}
       />
+      <FormControl>
+        <TextField onChange={onWeekChange} value={week} label={"week"} />
+        {weekFormatted}
+      </FormControl>
       <button onClick={scrapeEveryNoise}>scrape</button>
       <div className="albums-list">
         {albums?.map((album) => (
-          <AlbumTile key={album.id} {...album} setQueue={setQueue} />
+          <AlbumTile key={album.id} {...album} />
         ))}
       </div>
-      <textarea value={queue.join(`\n`)} rows={queue.length} />
+      <textarea value={selected.join(`\n`)} rows={selected.length} readOnly />
     </div>
   );
 };
