@@ -12,17 +12,11 @@ export const selectedSlice = createSlice({
           state.push(action.payload.uri);
         }
       } else {
-        state.splice(
-          state.findIndex((item) => item === action.payload.uri),
-          1
-        );
+        const index = state.findIndex((item) => item === action.payload.uri);
+        if (index !== -1) {
+          state.splice(index, 1);
+        }
       }
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
     },
   },
 });

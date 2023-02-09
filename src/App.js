@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
+import { Button } from "@mui/material";
 
 /**
  * Obtains parameters from the hash of the URL
@@ -58,7 +59,8 @@ const authorise = () => {
   const state = generateRandomString(16);
 
   localStorage.setItem(stateKey, state);
-  const scope = "user-read-private user-read-email";
+  const scope =
+    "user-read-private user-read-email playlist-modify-private playlist-modify-public";
 
   let url = "https://accounts.spotify.com/authorize";
   url += "?response_type=token";
@@ -76,15 +78,34 @@ const Content = () => {
   const { auth, setAuth } = useContext(AuthCred);
 
   useEffect(() => {
-    if (storageAuth?.access_token && (!auth || !auth?.access_token)) {
-      setAuth(storageAuth);
-    }
+    const getMe = async () => {
+      if (
+        storageAuth?.access_token &&
+        (!auth?.auth || !auth?.auth?.access_token)
+      ) {
+        const { data } = await axios.get(`https://api.spotify.com/v1/me`, {
+          headers: {
+            Authorization: "Bearer " + storageAuth?.access_token,
+          },
+        });
+
+        if (data) {
+          setAuth({ auth: storageAuth, me: data });
+          axios.defaults.headers["Authorization"] =
+            "Bearer " + storageAuth.access_token;
+        }
+      }
+    };
+
+    getMe();
   }, [auth, setAuth, storageAuth]);
 
   return (
     <div className="App">
       {storageAuth?.access_token && <Dashboard />}
-      <button onClick={authorise}>auth</button>
+      <Button variant="contained" onClick={authorise}>
+        {storageAuth?.access_token && "re"}authorize
+      </Button>
     </div>
   );
 };
@@ -100,7 +121,7 @@ const router = createBrowserRouter([
 export const AuthCred = createContext(null);
 
 function App() {
-  const [auth, setAuth] = useState();
+  const [auth, setAuth] = useState({ me: null, auth: null });
 
   return (
     <AuthCred.Provider value={{ auth, setAuth }}>

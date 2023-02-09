@@ -1,14 +1,74 @@
+$selection: rgb(156, 177, 215);
+$background: rgba(210, 217, 231, 0.89);
+
 .dashboard {
-  .albums-list {
-    display: flex;
-    flex-wrap: wrap;
+  text-align: left;
+}
+
+section {
+  padding: 1rem;
+  margin: 1rem;
+  border: 1px dashed grey;
+}
+
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $background;
+  z-index: 9999;
+}
+
+.albums-list,
+.track-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.albums-list {
+  .album-tile {
+    padding: 1rem;
+    margin: 1rem;
+    flex-basis: 17rem;
+  }
+
+  .track-tile {
+    padding: 0.2rem;
+    margin-top: 0.2rem;
   }
 }
 
-.album-tile {
+.track-list {
+  .track-tile {
+    flex-basis: 10rem;
+    height: 10rem;
+    padding: 1rem;
+    margin: 1rem;
+  }
+}
+
+.album-tile,
+.track-tile {
   border: 1px solid black;
-  padding: 1rem;
-  margin: 1rem;
+
+  .cover {
+    pointer-events: none;
+  }
+}
+
+.track-tile {
+  cursor: pointer;
+
+  label {
+    cursor: pointer;
+  }
+
+  &.focused {
+    border-color: $selection;
+    outline: 3px solid $selection;
+  }
 }
 
 textarea {
