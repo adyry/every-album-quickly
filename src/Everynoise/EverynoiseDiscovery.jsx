@@ -5,11 +5,11 @@ import {
   TextField,
 } from "@mui/material";
 import { allGenres, myGenres } from "../constants";
-import axios from "axios";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { extractTracksFromAlbums } from "../Common/requests";
 import AlbumList from "../Common/AlbumList";
+import { API } from "aws-amplify";
 
 const date = "20230106";
 const dayJSdate = dayjs(date);
@@ -25,32 +25,38 @@ const EverynoiseDiscovery = () => {
     await extractTracksFromAlbums(albumPackets);
 
   const scrapeEveryNoise = async () => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
+      const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
+      const scrapeUrl = encodeURI(
+        `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
+          ","
+        )}&region=US&date=${weekFormatted}&hidedupes=on&style=list`
+      ).replace(",", "%2C");
 
-    const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
-    const scrapeUrl = encodeURI(
-      `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
-        ","
-      )}&region=US&date=${weekFormatted}&hidedupes=on&style=list`
-    ).replace(",", "%2C");
+      const payload = {
+        scrapeUrl,
+      };
 
-    const payload = {
-      scrapeUrl,
-    };
-    const { data } = await axios.post("http://localhost:9000/scrape", payload);
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(data, "text/html");
-    doc.querySelectorAll(".similargenres ~ tr").forEach((v) => v.remove());
-    const tracks = Array.from(
-      doc.querySelectorAll('[href*="spotify:album"]')
-    ).map((v) => v.href.replace("spotify:album:", ""));
-    const albumPackets = [];
-    for (let i = 0; i * 20 < tracks.length; i++) {
-      albumPackets[i] = tracks.slice(20 * i, 20 + 20 * i);
+      const data = await API.post("scrape", "/scrape", { body: payload });
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(data, "text/html");
+      doc.querySelectorAll(".similargenres ~ tr").forEach((v) => v.remove());
+      const tracks = Array.from(
+        doc.querySelectorAll('[href*="spotify:album"]')
+      ).map((v) => v.href.replace("spotify:album:", ""));
+      const albumPackets = [];
+      for (let i = 0; i * 20 < tracks.length; i++) {
+        albumPackets[i] = tracks.slice(20 * i, 20 + 20 * i);
+      }
+      const albums = await getAlbums(albumPackets);
+      setAlbums(albums);
+    } catch (e) {
+      window.alert(e.message);
+    } finally {
+      setIsLoading(false);
     }
-    const albums = await getAlbums(albumPackets);
-    setAlbums(albums);
-    setIsLoading(false);
   };
 
   const onGenreChange = (e, data) => {

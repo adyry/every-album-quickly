@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/scrape": {
+      "name": "/scrape",
+      "lambdaFunction": "everyalbumquickly5e391c3b",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

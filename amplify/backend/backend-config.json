@@ -1,0 +1,43 @@
+{
+  "api": {
+    "scrape": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "everyalbumquickly5e391c3b"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "everyalbumquickly5e391c3b": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_everyalbumquickly5e391c3b_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "everyalbumquickly5e391c3b"
+        }
+      ]
+    },
+    "AMPLIFY_function_everyalbumquickly5e391c3b_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "everyalbumquickly5e391c3b"
+        }
+      ]
+    }
+  }
+}

@@ -13,6 +13,10 @@ import Dashboard from "./Dashboard";
 import { Button } from "@mui/material";
 import EverynoisePage from "./Everynoise/Everynoise.page";
 import PlaylistPage from "./Playlist/Playlist.page";
+import { Amplify } from "aws-amplify";
+import awsconfig from "./aws-exports";
+
+Amplify.configure(awsconfig);
 
 /**
  * Obtains parameters from the hash of the URL
@@ -62,7 +66,7 @@ const AuthCallback = () => {
 
 const authorise = () => {
   const client_id = "58b9602ee77944afa945595f99adb56a";
-  const redirect_uri = window.location.href + "callback/";
+  const redirect_uri = window.location.origin + "/callback/";
 
   const state = generateRandomString(16);
 
