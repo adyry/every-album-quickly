@@ -1,7 +1,9 @@
 @import "../Common/variables";
 
 .dashboard {
-  text-align: left;
+  a {
+    padding: 0.2rem;
+  }
 }
 
 section {

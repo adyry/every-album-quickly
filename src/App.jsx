@@ -15,6 +15,7 @@ import EverynoisePage from "./Everynoise/Everynoise.page";
 import PlaylistPage from "./Playlist/Playlist.page";
 import { Amplify } from "aws-amplify";
 import awsconfig from "./aws-exports";
+import EnrichPage from "./Enrich/Enrich.page";
 
 Amplify.configure(awsconfig);
 
@@ -121,18 +122,23 @@ const Content = () => {
     getMe();
   }, [auth, setAuth, storageAuth]);
 
+  const authorized = storageAuth?.access_token;
+
   return (
     <div className="App">
       <section>
-        {storageAuth?.access_token && <Dashboard />}
-        <Button variant="contained" onClick={authorise}>
-          {storageAuth?.access_token && "re"}authorize with Spotify
-        </Button>
+        {authorized && <Dashboard />}
+        {!authorized && (
+          <Button variant="contained" onClick={authorise}>
+            Authorize with Spotify
+          </Button>
+        )}
       </section>
-      {storageAuth?.access_token && (
+      {authorized && (
         <Routes>
           <Route path={"/everynoise"} element={<EverynoisePage />} />
           <Route path={"/playlist"} element={<PlaylistPage />} />
+          <Route path={"/enrich"} element={<EnrichPage />} />
         </Routes>
       )}
     </div>

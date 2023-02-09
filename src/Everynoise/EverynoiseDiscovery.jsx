@@ -21,9 +21,6 @@ const EverynoiseDiscovery = () => {
   const [selectedGenres, setSelectedGenres] = useState(myGenres);
   const [week, setWeek] = useState(0);
 
-  const getAlbums = async (albumPackets) =>
-    await extractTracksFromAlbums(albumPackets);
-
   const scrapeEveryNoise = async () => {
     try {
       setIsLoading(true);
@@ -50,7 +47,7 @@ const EverynoiseDiscovery = () => {
       for (let i = 0; i * 20 < tracks.length; i++) {
         albumPackets[i] = tracks.slice(20 * i, 20 + 20 * i);
       }
-      const albums = await getAlbums(albumPackets);
+      const albums = await extractTracksFromAlbums(albumPackets);
       setAlbums(albums);
     } catch (e) {
       window.alert(e.message);
@@ -73,7 +70,7 @@ const EverynoiseDiscovery = () => {
     for (let i = 0; i * 20 < albumURIArray.length; i++) {
       albumPackets[i] = albumURIArray.slice(20 * i, 20 + 20 * i);
     }
-    const albumsResponse = await getAlbums(albumPackets);
+    const albumsResponse = await extractTracksFromAlbums(albumPackets);
     console.log(
       `${albumsResponse
         .map((a) => a.tracks.items.map((t) => t.uri))

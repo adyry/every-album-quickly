@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useContext, useState } from "react";
 import { AuthCred } from "../App";
 import {
@@ -10,9 +10,12 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
+import { extractTracksFromAlbums } from "./requests";
+import { clearTracks } from "../store/selectedSlice";
 
 const Selected = () => {
   const selected = useSelector((state) => state.selected);
+  const dispatch = useDispatch();
   const [publicPlaylist, setPublicPlaylist] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -45,11 +48,19 @@ const Selected = () => {
 
     if (playlist.data) {
       const id = playlist.data.id;
-      const result = await axios.post(
-        `https://api.spotify.com/v1/playlists/${id}/tracks`,
-        {
-          uris: selected,
-        }
+
+      const packets = [];
+      const inc = 100;
+      for (let i = 0; i * inc < selected.length; i++) {
+        packets[i] = selected.slice(inc * i, inc + inc * i);
+      }
+
+      const result = await Promise.all(
+        packets.map((packet) =>
+          axios.post(`https://api.spotify.com/v1/playlists/${id}/tracks`, {
+            uris: packet,
+          })
+        )
       );
       setLoading(false);
       if (result.data) {
@@ -58,10 +69,13 @@ const Selected = () => {
     }
   };
 
+  const clear = () => {
+    dispatch(clearTracks());
+  };
+
   return (
     <>
       <div>
-        <div>{selected.length} tracks selected</div>
         <TextField
           onChange={onTextChange}
           value={playlistName}
@@ -79,6 +93,9 @@ const Selected = () => {
         >
           Add {selected.length} to the Playlist{" "}
           {loading && <CircularProgress color="secondary" />}
+        </Button>
+        <Button variant="contained" color="secondary" onClick={clear}>
+          Clear Selection
         </Button>
       </div>
       <Modal open={success} onClose={() => setSuccess(false)}>

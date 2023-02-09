@@ -18,10 +18,16 @@ export const selectedSlice = createSlice({
         }
       }
     },
+    selectTracks: (state, action) => {
+      return action.payload.uris;
+    },
+    clearTracks: (state, action) => {
+      return [];
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { selectTrack } = selectedSlice.actions;
+export const { selectTrack, selectTracks, clearTracks } = selectedSlice.actions;
 
 export default selectedSlice.reducer;
