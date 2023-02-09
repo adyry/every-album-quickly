@@ -61,8 +61,8 @@ const AuthCallback = () => {
 };
 
 const authorise = () => {
-  const client_id = "58b9602ee77944afa945595f99adb56a"; // Your client id
-  const redirect_uri = "http://localhost:3000/callback/"; // Your redirect uri
+  const client_id = "58b9602ee77944afa945595f99adb56a";
+  const redirect_uri = window.location.href + "callback/";
 
   const state = generateRandomString(16);
 
