@@ -19,17 +19,20 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
     setFocused(false);
   };
 
-  const addTrack = (e) => {
-    if (e.target.dataset && e.target.dataset.value) {
-      dispatch(
-        selectTrack({
-          uri: `${e.target.dataset.value}`,
-          checked: !(e.target.dataset.checked === "true"),
-        })
-      );
-    } else {
-      dispatch(selectTrack({ uri: e.target.value, checked: e.target.checked }));
+  const keyCheck = (e) => {
+    if (e.key === " " || e.key === "Enter") {
+      e.preventDefault();
+      addTrack(e);
     }
+  };
+
+  const addTrack = (e) => {
+    dispatch(
+      selectTrack({
+        uri: `${e.target.dataset.value}`,
+        checked: !(e.target.dataset.checked === "true"),
+      })
+    );
   };
 
   return (
@@ -40,6 +43,10 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
       onClick={addTrack}
       data-checked={checked}
       data-value={uri}
+      tabIndex={0}
+      onFocus={playPreview}
+      onBlur={stopPreview}
+      onKeyDown={keyCheck}
     >
       {singleTrack && (
         <div className="cover">
@@ -63,10 +70,9 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
         type="checkbox"
         value={uri}
         id={uri}
-        onFocus={playPreview}
-        onBlur={stopPreview}
-        onChange={addTrack}
         checked={checked}
+        tabIndex="-1"
+        readOnly
       />
       {preview_url ? (
         <audio ref={audioRef} src={preview_url} preload="none" key={uri} />

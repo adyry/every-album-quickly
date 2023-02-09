@@ -1,10 +1,14 @@
 import "./App.scss";
+import { Routes, Route, Link } from "react-router-dom";
+
 import axios from "axios";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { Button } from "@mui/material";
+import EverynoisePage from "./Everynoise/Everynoise.page";
+import PlaylistPage from "./Playlist/Playlist.page";
 
 /**
  * Obtains parameters from the hash of the URL
@@ -83,16 +87,25 @@ const Content = () => {
         storageAuth?.access_token &&
         (!auth?.auth || !auth?.auth?.access_token)
       ) {
-        const { data } = await axios.get(`https://api.spotify.com/v1/me`, {
-          headers: {
-            Authorization: "Bearer " + storageAuth?.access_token,
-          },
-        });
+        try {
+          const { data } = await axios.get(`https://api.spotify.com/v1/me`, {
+            headers: {
+              Authorization: "Bearer " + storageAuth?.access_token,
+            },
+          });
 
-        if (data) {
-          setAuth({ auth: storageAuth, me: data });
-          axios.defaults.headers["Authorization"] =
-            "Bearer " + storageAuth.access_token;
+          if (data) {
+            setAuth({ auth: storageAuth, me: data });
+            axios.defaults.headers["Authorization"] =
+              "Bearer " + storageAuth.access_token;
+          }
+        } catch (e) {
+          if (e.response.status === 401) {
+            setAuth({ auth: null, me: null });
+            localStorage.removeItem("auth");
+          } else {
+            window.alert("Sorry, unhandler error encountered " + e.message);
+          }
         }
       }
     };
@@ -102,10 +115,16 @@ const Content = () => {
 
   return (
     <div className="App">
-      {storageAuth?.access_token && <Dashboard />}
-      <Button variant="contained" onClick={authorise}>
-        {storageAuth?.access_token && "re"}authorize
-      </Button>
+      <section>
+        {storageAuth?.access_token && <Dashboard />}
+        <Button variant="contained" onClick={authorise}>
+          {storageAuth?.access_token && "re"}authorize with Spotify
+        </Button>
+      </section>
+      <Routes>
+        <Route path={"/everynoise"} element={<EverynoisePage />} />
+        <Route path={"/playlist"} element={<PlaylistPage />} />
+      </Routes>
     </div>
   );
 };

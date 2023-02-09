@@ -15,7 +15,7 @@ const Selected = () => {
   const selected = useSelector((state) => state.selected);
   const [publicPlaylist, setPublicPlaylist] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(null);
+  const [success, setSuccess] = useState(false);
   const {
     auth: { me },
   } = useContext(AuthCred);
