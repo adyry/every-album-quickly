@@ -1,10 +1,14 @@
 import "./App.scss";
-import { Routes, Route, Link } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 
 import axios from "axios";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import { Button } from "@mui/material";
 import EverynoisePage from "./Everynoise/Everynoise.page";
@@ -121,10 +125,12 @@ const Content = () => {
           {storageAuth?.access_token && "re"}authorize with Spotify
         </Button>
       </section>
-      <Routes>
-        <Route path={"/everynoise"} element={<EverynoisePage />} />
-        <Route path={"/playlist"} element={<PlaylistPage />} />
-      </Routes>
+      {storageAuth?.access_token && (
+        <Routes>
+          <Route path={"/everynoise"} element={<EverynoisePage />} />
+          <Route path={"/playlist"} element={<PlaylistPage />} />
+        </Routes>
+      )}
     </div>
   );
 };

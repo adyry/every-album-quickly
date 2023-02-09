@@ -13,6 +13,7 @@ const PlaylistDiscovery = () => {
   const [loading, setLoading] = useState(false);
   const [playlistUri, setPlaylistUri] = useState("5h0RKfezC0vmHziRkXdWzI");
   const [tracks, setTracks] = useState();
+  const [playlist, setPlaylist] = useState();
 
   const onPlaylistUriChange = (e) => {
     const matchURI = e.target.value.match(/spotify:playlist:.*/);
@@ -41,8 +42,9 @@ const PlaylistDiscovery = () => {
   const readPlaylist = async () => {
     try {
       setLoading(true);
-      const result = await getPlaylist(playlistUri);
-      setTracks(result);
+      const { tracks, playlist } = await getPlaylist(playlistUri);
+      setTracks(tracks);
+      setPlaylist(playlist);
       setLoading(false);
     } catch (e) {
       window.alert(
@@ -53,7 +55,7 @@ const PlaylistDiscovery = () => {
 
   return (
     <>
-      Browse through specified playlist <br />
+      Browse specified playlist <br />
       <FormControl>
         <TextField
           onChange={onPlaylistUriChange}
@@ -65,6 +67,11 @@ const PlaylistDiscovery = () => {
       <Button variant="contained" onClick={readPlaylist} disabled={loading}>
         read playlist {loading && <CircularProgress color="secondary" />}
       </Button>
+      {playlist && (
+        <div className="analysing-header">
+          Now Analysing {playlist.name} by {playlist.owner.display_name}
+        </div>
+      )}
       <TrackList tracks={tracks} />
     </>
   );

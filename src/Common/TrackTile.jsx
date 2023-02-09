@@ -37,7 +37,9 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
 
   return (
     <div
-      className={`track-tile ${focused ? "focused" : ""}`}
+      className={`track-tile ${focused ? "focused" : ""} ${
+        checked ? "checked" : ""
+      }`}
       onMouseOver={playPreview}
       onMouseOut={stopPreview}
       onClick={addTrack}

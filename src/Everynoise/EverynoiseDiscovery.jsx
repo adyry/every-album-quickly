@@ -2,7 +2,6 @@ import {
   Autocomplete,
   Button,
   CircularProgress,
-  FormControl,
   TextField,
 } from "@mui/material";
 import { allGenres, myGenres } from "../constants";
@@ -22,18 +21,19 @@ const EverynoiseDiscovery = () => {
   const [selectedGenres, setSelectedGenres] = useState(myGenres);
   const [week, setWeek] = useState(0);
 
-  const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
-  const scrapeUrl = encodeURI(
-    `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
-      ","
-    )}&region=US&date=${weekFormatted}&hidedupes=on&style=list`
-  ).replace(",", "%2C");
-
   const getAlbums = async (albumPackets) =>
     await extractTracksFromAlbums(albumPackets);
 
   const scrapeEveryNoise = async () => {
     setIsLoading(true);
+
+    const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
+    const scrapeUrl = encodeURI(
+      `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
+        ","
+      )}&region=US&date=${weekFormatted}&hidedupes=on&style=list`
+    ).replace(",", "%2C");
+
     const payload = {
       scrapeUrl,
     };
@@ -102,18 +102,20 @@ const EverynoiseDiscovery = () => {
           <TextField {...params} placeholder={"Choose genres"} />
         )}
       />
-      <FormControl>
+      <div className="scraper-weeks">
         <TextField
           onChange={onWeekChange}
           value={week}
           label={"week"}
           type={"number"}
+          sx={{ width: 100 }}
         />
-        {weekFormatted}
-      </FormControl>
-      <Button variant="contained" onClick={scrapeEveryNoise}>
-        scrape albums
-      </Button>
+        {dayJSdate.add(week, "weeks").format("YYYY MM DD")}
+
+        <Button variant="contained" onClick={scrapeEveryNoise}>
+          scrape albums
+        </Button>
+      </div>
       <AlbumList albums={albums} />
     </>
   );

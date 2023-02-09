@@ -1,5 +1,4 @@
-$selection: rgb(156, 177, 215);
-$background: rgba(210, 217, 231, 0.89);
+@import "../Common/variables";
 
 .dashboard {
   text-align: left;
@@ -11,15 +10,7 @@ section {
   border: 1px dashed grey;
 }
 
-.loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $background;
-  z-index: 9999;
-}
+
 
 .albums-list,
 .track-list {
@@ -61,13 +52,18 @@ section {
 .track-tile {
   cursor: pointer;
 
-  label {
+  label, input {
     cursor: pointer;
+    pointer-events: none;
   }
 
   &.focused {
-    border-color: $selection;
-    outline: 3px solid $selection;
+    border-color: $focus;
+    outline: 3px solid $focus;
+  }
+
+  &.checked {
+    background-color: $background;
   }
 }
 
