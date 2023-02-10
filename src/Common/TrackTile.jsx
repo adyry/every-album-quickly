@@ -14,6 +14,10 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
     setFocused(true);
   };
 
+  const focus = (e) => {
+    e.target.focus();
+  };
+
   const stopPreview = () => {
     if (audioRef.current) audioRef.current.pause();
     setFocused(false);
@@ -40,7 +44,7 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
       className={`track-tile ${focused ? "focused" : ""} ${
         checked ? "checked" : ""
       }`}
-      onMouseOver={playPreview}
+      onMouseOver={focus}
       onMouseOut={stopPreview}
       onClick={addTrack}
       data-checked={checked}
