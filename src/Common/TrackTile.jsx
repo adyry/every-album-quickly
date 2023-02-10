@@ -37,6 +37,11 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
         checked: !(e.target.dataset.checked === "true"),
       })
     );
+    if (checked) {
+      stopPreview();
+    } else {
+      playPreview();
+    }
   };
 
   return (
