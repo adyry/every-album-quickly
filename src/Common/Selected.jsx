@@ -10,7 +10,6 @@ import {
   TextField,
 } from "@mui/material";
 import axios from "axios";
-import { extractTracksFromAlbums } from "./requests";
 import { clearTracks } from "../store/selectedSlice";
 
 const Selected = () => {

@@ -17,12 +17,10 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
     }
 
     if (matchURI && matchURI[0]) {
-      setPlaylistUri(e.target.value.match(/(?<=spotify:playlist:).*/)[0]);
+      setPlaylistUri(e.target.value.match(/spotify:playlist:(.*)?/)[1]);
     } else if (matchURL && matchURL[0]) {
       setPlaylistUri(
-        e.target.value.match(
-          /(?<=https:\/\/open.spotify.com\/playlist\/).*(?=\?)/
-        )[0]
+        e.target.value.match(/https:\/\/open.spotify.com\/playlist\/(.*?)\?/)[1]
       );
     } else {
       window.alert("Sorry, looks like it's not a correct playlist URL or URI");
