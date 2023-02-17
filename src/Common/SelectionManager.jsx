@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useContext, useState } from "react";
 import { AuthCred } from "../App";
+import { Outlet } from "react-router-dom";
 import {
   Button,
   CircularProgress,
@@ -12,7 +13,7 @@ import {
 import axios from "axios";
 import { clearTracks } from "../store/selectedSlice";
 
-const Selected = () => {
+const SelectionManager = () => {
   const selected = useSelector((state) => state.selected);
   const dispatch = useDispatch();
   const [publicPlaylist, setPublicPlaylist] = useState(true);
@@ -74,28 +75,33 @@ const Selected = () => {
 
   return (
     <>
-      <div>
-        <TextField
-          onChange={onTextChange}
-          value={playlistName}
-          sx={{ minWidth: 260 }}
-          label="Name of the playlist"
-        />
-        <FormControlLabel
-          control={<Switch onChange={togglePublic} />}
-          label="Public"
-        />
-        <Button
-          variant="contained"
-          onClick={addToPlaylist}
-          disabled={loading || selected?.length === 0}
-        >
-          Add {selected.length} to the Playlist{" "}
-          {loading && <CircularProgress color="secondary" />}
-        </Button>
-        <Button variant="contained" color="secondary" onClick={clear}>
-          Clear Selection
-        </Button>
+      <div className="dashboard">
+        <section className="fill-view">
+          <Outlet />
+        </section>
+        <section>
+          <TextField
+            onChange={onTextChange}
+            value={playlistName}
+            sx={{ minWidth: 260 }}
+            label="Name of the playlist"
+          />
+          <FormControlLabel
+            control={<Switch onChange={togglePublic} />}
+            label="Public"
+          />
+          <Button
+            variant="contained"
+            onClick={addToPlaylist}
+            disabled={loading || selected?.length === 0}
+          >
+            Add {selected.length} to the Playlist{" "}
+            {loading && <CircularProgress color="secondary" />}
+          </Button>
+          <Button variant="contained" color="secondary" onClick={clear}>
+            Clear Selection
+          </Button>
+        </section>
       </div>
       <Modal open={success} onClose={() => setSuccess(false)}>
         <div className="modal-content">
@@ -108,4 +114,4 @@ const Selected = () => {
   );
 };
 
-export default Selected;
+export default SelectionManager;

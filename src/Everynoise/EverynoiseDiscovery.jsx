@@ -8,7 +8,7 @@ import { allGenres, myGenres } from "../constants";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { extractTracksFromAlbums } from "../Common/requests";
-import AlbumList from "../Common/AlbumList";
+import AlbumList from "./AlbumList";
 import { API } from "aws-amplify";
 
 const date = "20230106";

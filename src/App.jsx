@@ -1,4 +1,3 @@
-import "./App.scss";
 import {
   createBrowserRouter,
   Route,
@@ -6,16 +5,17 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
-
+import "./styles.scss";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
 import Dashboard from "./Dashboard";
 import { Button } from "@mui/material";
-import EverynoisePage from "./Everynoise/Everynoise.page";
-import PlaylistPage from "./Playlist/Playlist.page";
 import { Amplify } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import EnrichPage from "./Enrich/Enrich.page";
+import SelectionManager from "./Common/SelectionManager";
+import EverynoiseDiscovery from "./Everynoise/EverynoiseDiscovery";
+import PlaylistDiscovery from "./Playlist/PlaylistDiscovery";
 
 Amplify.configure(awsconfig);
 
@@ -126,20 +126,24 @@ const Content = () => {
 
   return (
     <div className="App">
-      <section>
+      <header className="app-header">
         {authorized && <Dashboard />}
         {!authorized && (
           <Button variant="contained" onClick={authorise}>
             Authorize with Spotify
           </Button>
         )}
-      </section>
+      </header>
       {authorized && (
-        <Routes>
-          <Route path={"/everynoise"} element={<EverynoisePage />} />
-          <Route path={"/playlist"} element={<PlaylistPage />} />
-          <Route path={"/enrich"} element={<EnrichPage />} />
-        </Routes>
+        <>
+          <Routes>
+            <Route element={<SelectionManager />}>
+              <Route path={"/playlist"} element={<PlaylistDiscovery />} />
+              <Route path={"/everynoise"} element={<EverynoiseDiscovery />} />
+              <Route path={"/enrich"} element={<EnrichPage />} />
+            </Route>
+          </Routes>
+        </>
       )}
     </div>
   );

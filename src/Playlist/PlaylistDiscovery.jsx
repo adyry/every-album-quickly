@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { getPlaylist } from "../Common/requests";
-import TrackList from "../Common/TrackList";
+import TrackList from "./TrackList";
 import PlaylistInput from "../Common/PlaylistInput";
 
 const PlaylistDiscovery = () => {
@@ -24,7 +24,7 @@ const PlaylistDiscovery = () => {
   };
 
   return (
-    <>
+    <div className="playlist-discovery">
       Browse specified playlist <br />
       <PlaylistInput
         setPlaylistUri={setPlaylistUri}
@@ -37,7 +37,7 @@ const PlaylistDiscovery = () => {
         </div>
       )}
       <TrackList tracks={tracks} />
-    </>
+    </div>
   );
 };
 

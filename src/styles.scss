@@ -1,0 +1,139 @@
+@import "./Common/variables";
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+
+}
+
+.app-header {
+  padding: 1rem;
+
+  a {
+    display: inline-block;
+    padding: 0.5rem 0.5rem 0.5rem 0;
+  }
+}
+.dashboard,
+.fill-view,
+.playlist-discovery,
+.track-list-wrapper,
+.album-list-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+section {
+  padding: 1rem;
+  margin: 1rem;
+  border: 1px dashed grey;
+}
+
+.album-list,
+.track-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.album-list {
+  .album-item {
+    padding: 1rem;
+    flex-basis: 17rem;
+  }
+
+  .track-item {
+    padding: 0.2rem;
+  }
+}
+
+$track-size: 12rem;
+.cover {
+  height: 64px;
+}
+
+.track-list {
+  .track-item {
+    flex-basis: $track-size;
+    height: $track-size;
+    margin: 0.2rem;
+    padding: 1rem;
+  }
+
+  .track-tile {
+    height: $track-size;
+  }
+}
+
+
+.album-tile,
+.track-item {
+  .cover {
+    pointer-events: none;
+  }
+}
+
+.album-item,
+.album-tile {
+  //height: 400px;
+  // ->> virt
+  flex-basis: 17rem;
+  padding: 1rem;
+
+  .track-tile {
+    padding: 0.3rem;
+  }
+  // <<- virt
+}
+
+.track-tile {
+  border: 1px solid black;
+
+  cursor: pointer;
+
+  label, input {
+    cursor: pointer;
+    pointer-events: none;
+  }
+
+  &.focused {
+    border-color: $focus;
+    outline: 3px solid $focus;
+  }
+
+  &.checked {
+    background-color: $background;
+  }
+}
+
+textarea {
+  width: 500px;
+}
+
+.modal-content {
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+}
+
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: $locked-background;
+  z-index: 9999;
+}

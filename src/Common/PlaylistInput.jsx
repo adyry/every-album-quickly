@@ -35,7 +35,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
           onChange={onPlaylistUriChange}
           defaultValue={"5h0RKfezC0vmHziRkXdWzI"}
           label="Playlist URI / URL"
-          sx={{ width: 350 }}
+          sx={{ width: 310 }}
         />
       </FormControl>
       <Button variant="contained" onClick={onButtonClick} disabled={loading}>

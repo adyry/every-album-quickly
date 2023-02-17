@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { selectTrack } from "../store/selectedSlice";
-import TrackTile from "./TrackTile";
 import { Button } from "@mui/material";
+import TrackTile from "../Playlist/TrackTile";
 
 const AlbumTile = ({ images, tracks, name, artists, label }) => {
   const dispatch = useDispatch();

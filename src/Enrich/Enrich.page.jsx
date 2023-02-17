@@ -1,4 +1,3 @@
-import Selected from "../Common/Selected";
 import PlaylistInput from "../Common/PlaylistInput";
 import { useState } from "react";
 import { extractTracksFromAlbums, getPlaylist } from "../Common/requests";
@@ -48,26 +47,21 @@ const EnrichPage = () => {
   };
 
   return (
-    <div className="dashboard">
-      <section>
-        <div>Add whole albums to your single tracks</div>
-        <PlaylistInput
-          setPlaylistUri={setPlaylistUri}
-          onButtonClick={readPlaylist}
-          loading={loading}
-        />
-        {playlist && (
-          <div>
-            Found {count} new tracks by adding whole albums to the tracks from "
-            {playlist.name}". Provide a name for your new playlist and use "Add"
-            button below.
-          </div>
-        )}
-      </section>
-      <section>
-        <Selected />
-      </section>
-    </div>
+    <>
+      <div>Add whole albums to your single tracks</div>
+      <PlaylistInput
+        setPlaylistUri={setPlaylistUri}
+        onButtonClick={readPlaylist}
+        loading={loading}
+      />
+      {playlist && (
+        <div>
+          Found {count} new tracks by adding whole albums to the tracks from "
+          {playlist.name}". Provide a name for your new playlist and use "Add"
+          button below.
+        </div>
+      )}
+    </>
   );
 };
 
