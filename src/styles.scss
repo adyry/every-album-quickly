@@ -7,12 +7,14 @@ html {
   box-sizing: inherit;
 }
 
+h4, h5 {
+  margin: 0 0 0.2rem  0;
+}
+
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-
-
 }
 
 .app-header {
@@ -33,16 +35,58 @@ html {
   flex-direction: column;
 }
 
+.dashboard {
+  a {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+}
+
+
+
 section {
-  padding: 1rem;
-  margin: 1rem;
-  border: 1px dashed grey;
+  padding: 3px;
+  margin: 10px;
+}
+
+.control-panel {
+  margin-bottom: $spacing-l;
+  background-color: $tertiary;
+  padding: $spacing-m;
+  border-radius: 10px;
+
+  .description {
+    margin-bottom: $spacing-l;
+  }
+
+  .playlist-input {
+    display: flex;
+    align-items: stretch;
+    gap: $spacing-m;
+  }
+
+  .scraper-weeks {
+    margin-top: $spacing-l;
+  }
+
+  input,
+  .MuiInputBase-root {
+    background: white;
+  }
+}
+
+.inputs-row {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
 }
 
 .album-list,
 .track-list {
   display: flex;
   flex-wrap: wrap;
+  gap: 25px;
 }
 
 .album-list {
@@ -84,19 +128,74 @@ $track-size: 12rem;
 
 .album-item,
 .album-tile {
-  //height: 400px;
-  // ->> virt
-  flex-basis: 17rem;
-  padding: 1rem;
+  flex: 1 1 400px;
+  position: relative;
+  border-radius: 15px;
+  padding: $spacing-m;
+  border: 1px solid $tertiary;
 
-  .track-tile {
-    padding: 0.3rem;
+  .background-image {
+    position: absolute;
+    top:0;
+    bottom:0;
+    left:0;
+    right:0;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: 15px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: blur(50px);
+      opacity: 0.45;
+    }
   }
-  // <<- virt
+
+  .heading {
+    display: flex;
+    gap: $spacing-m;
+
+    .cover {
+      height: 100px;
+      width: 100px;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+  .track-tile {
+    padding: 0.5rem;
+
+  }
+}
+
+.track-tile-wrapper {
+  display: flex;
+  margin-bottom: 3px;
+  margin-top: 3px;
+  align-items: center;
+
+  .play-controls {
+    flex: 0 0 40px;
+    display: flex;
+    justify-content: center;
+  }
+  .track-tile {
+    flex: 1;
+  }
 }
 
 .track-tile {
-  border: 1px solid black;
+  border: 1px solid $secondary;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 
   cursor: pointer;
 
@@ -105,13 +204,19 @@ $track-size: 12rem;
     pointer-events: none;
   }
 
+  input {
+    display: none;
+  }
+
   &.focused {
-    border-color: $focus;
-    outline: 3px solid $focus;
+
+    background-color: white;
+    mix-blend-mode: overlay;
   }
 
   &.checked {
-    background-color: $background;
+    background-color: white;
+    mix-blend-mode: overlay;
   }
 }
 
@@ -135,5 +240,10 @@ textarea {
   right: 0;
   bottom: 0;
   background: $locked-background;
+  color: $main-font;
   z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
 }

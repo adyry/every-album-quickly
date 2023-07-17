@@ -79,7 +79,7 @@ const SelectionManager = () => {
         <section className="fill-view">
           <Outlet />
         </section>
-        <section>
+        <section className="control-panel inputs-row">
           <TextField
             onChange={onTextChange}
             value={playlistName}
@@ -95,10 +95,10 @@ const SelectionManager = () => {
             onClick={addToPlaylist}
             disabled={loading || selected?.length === 0}
           >
-            Add {selected.length} to the Playlist{" "}
+            Save {selected.length} to the Playlist{" "}
             {loading && <CircularProgress color="secondary" />}
           </Button>
-          <Button variant="contained" color="secondary" onClick={clear}>
+          <Button variant="contained" color="tertiary" onClick={clear}>
             Clear Selection
           </Button>
         </section>

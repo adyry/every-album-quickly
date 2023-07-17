@@ -48,12 +48,14 @@ const EnrichPage = () => {
 
   return (
     <>
-      <div>Add whole albums to your single tracks</div>
+      <div className="control-panel">
+      <h4 className="description">Add whole albums to your single tracks</h4>
       <PlaylistInput
         setPlaylistUri={setPlaylistUri}
         onButtonClick={readPlaylist}
         loading={loading}
       />
+      </div>
       {playlist && (
         <div>
           Found {count} new tracks by adding whole albums to the tracks from "

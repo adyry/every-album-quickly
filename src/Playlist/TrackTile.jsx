@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { createRef, useState } from "react";
 import { selectTrack } from "../store/selectedSlice";
+import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
 
 const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
   const dispatch = useDispatch();
@@ -45,6 +49,7 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
   };
 
   return (
+    <div className="track-tile-wrapper">
     <div
       className={`track-tile ${focused ? "focused" : ""} ${
         checked ? "checked" : ""
@@ -59,6 +64,7 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
       onBlur={stopPreview}
       onKeyDown={keyCheck}
     >
+      {checked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
       {singleTrack && (
         <div className="cover">
           <img src={album.images[2].url} alt="cover" />{" "}
@@ -85,12 +91,21 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
         tabIndex="-1"
         readOnly
       />
+
       {preview_url ? (
         <audio ref={audioRef} src={preview_url} preload="none" key={uri} />
       ) : (
         "preview missing"
       )}
     </div>
+      <div className="play-controls">
+      {preview_url && (<>
+          {!focused ? <PlayCircleIcon onClick={playPreview} /> :
+      <PauseCircleIcon onClick={stopPreview} />}
+        </>
+        )}
+      </div>
+      </div>
   );
 };
 

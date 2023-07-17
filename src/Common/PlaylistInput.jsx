@@ -29,7 +29,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
   };
 
   return (
-    <>
+    <div className="playlist-input">
       <FormControl>
         <TextField
           onChange={onPlaylistUriChange}
@@ -41,7 +41,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
       <Button variant="contained" onClick={onButtonClick} disabled={loading}>
         read playlist {loading && <CircularProgress color="secondary" />}
       </Button>
-    </>
+    </div>
   );
 };
 

@@ -17,6 +17,7 @@ const PlaylistDiscovery = () => {
       setPlaylist(playlist);
       setLoading(false);
     } catch (e) {
+      console.log(e)
       window.alert(
         "Sorry, something went wrong. Have you provided the correct playlist URI or URL?"
       );
@@ -25,12 +26,14 @@ const PlaylistDiscovery = () => {
 
   return (
     <div className="playlist-discovery">
-      Browse specified playlist <br />
+      <div className="control-panel">
+        <h4 className="description">Browse specified playlist</h4>
       <PlaylistInput
         setPlaylistUri={setPlaylistUri}
         onButtonClick={readPlaylist}
         loading={loading}
       />
+      </div>
       {playlist && (
         <div className="analysing-header">
           Now Analysing {playlist.name} by {playlist.owner.display_name}

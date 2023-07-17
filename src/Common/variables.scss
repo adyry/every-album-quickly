@@ -1,7 +1,13 @@
 $main: #386488;
 $secondary: #388885;
+$tertiary: #edf5f5;
+$main-font: #ffffff;
 
 $focus: $main;
 $selected: $secondary;
 $background: rgba($secondary, 0.5);
-$locked-background: rgba($secondary, 0.8);
+$locked-background: rgba($secondary, 0.95);
+
+$spacing-s: 3px;
+$spacing-m: 10px;
+$spacing-l: 20px;

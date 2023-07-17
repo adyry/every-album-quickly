@@ -1,5 +1,4 @@
 import AlbumTile from "./AlbumTile";
-import { VirtuosoGrid } from "react-virtuoso";
 
 const AlbumList = ({ albums }) => (
   // <div className="album-list-wrapper">

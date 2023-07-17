@@ -19,6 +19,9 @@ const theme = createTheme({
     secondary: {
       main: "#c5d0cd",
     },
+    tertiary: {
+      main: "#e7eeed"
+    },
     components: {
       MuiButton: {
         styleOverrides: {

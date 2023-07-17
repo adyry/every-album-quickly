@@ -1,15 +1,10 @@
-import {
-  Autocomplete,
-  Button,
-  CircularProgress,
-  TextField,
-} from "@mui/material";
-import { allGenres, myGenres } from "../constants";
-import { useState } from "react";
+import {Autocomplete, Button, CircularProgress, TextField,} from "@mui/material";
+import {allGenres, myGenres} from "../constants";
+import {useState} from "react";
 import dayjs from "dayjs";
-import { extractTracksFromAlbums } from "../Common/requests";
+import {extractTracksFromAlbums} from "../Common/requests";
 import AlbumList from "./AlbumList";
-import { API } from "aws-amplify";
+import {API} from "aws-amplify";
 
 const date = "20230106";
 const dayJSdate = dayjs(date);
@@ -35,7 +30,7 @@ const EverynoiseDiscovery = () => {
         scrapeUrl,
       };
 
-      const data = await API.post("scrape", "/scrape", { body: payload });
+      const data = await API.post("scrape", "/scrape", {body: payload});
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(data, "text/html");
@@ -83,43 +78,46 @@ const EverynoiseDiscovery = () => {
 
   return (
     <>
-      Scrape everynoise newreleasesbygenre and generate full albums from its
-      data.
+      <div className="control-panel">
+        <h4 className="description">Scrape everynoise newreleasesbygenre and generate full albums from its
+          data.</h4>
+
+        <Autocomplete
+          onChange={onGenreChange}
+          selectOnFocus
+          blurOnSelect
+          filterSelectedOptions
+          autoSelect
+          handleHomeEndKeys
+          multiple
+          options={allGenres}
+          value={selectedGenres}
+          renderInput={(params) => (
+            <TextField {...params} placeholder={"Choose genres"} label={"Selected genres"}/>
+          )}
+        />
+        <div className="inputs-row scraper-weeks">
+          <TextField
+            onChange={onWeekChange}
+            value={week}
+            label={"week"}
+            type={"number"}
+            sx={{width: 100}}
+          />
+          {dayJSdate.add(week, "weeks").format("YYYY MM DD")}
+
+          <Button variant="contained" onClick={scrapeEveryNoise}>
+            scrape albums
+          </Button>
+        </div>
+      </div>
+      <AlbumList albums={albums}/>
       {isLoading && (
         <div className="loader">
-          <CircularProgress />
+          <CircularProgress/>
           Scraping everynoise... might take a while
         </div>
       )}
-      <Autocomplete
-        onChange={onGenreChange}
-        selectOnFocus
-        blurOnSelect
-        filterSelectedOptions
-        autoSelect
-        handleHomeEndKeys
-        multiple
-        options={allGenres}
-        value={selectedGenres}
-        renderInput={(params) => (
-          <TextField {...params} placeholder={"Choose genres"} />
-        )}
-      />
-      <div className="scraper-weeks">
-        <TextField
-          onChange={onWeekChange}
-          value={week}
-          label={"week"}
-          type={"number"}
-          sx={{ width: 100 }}
-        />
-        {dayJSdate.add(week, "weeks").format("YYYY MM DD")}
-
-        <Button variant="contained" onClick={scrapeEveryNoise}>
-          scrape albums
-        </Button>
-      </div>
-      <AlbumList albums={albums} />
     </>
   );
 };
