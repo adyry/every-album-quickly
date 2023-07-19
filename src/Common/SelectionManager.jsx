@@ -79,7 +79,7 @@ const SelectionManager = () => {
         <section className="fill-view">
           <Outlet />
         </section>
-        <section className="control-panel inputs-row">
+        <section className="control-panel inputs-row bottom-panel">
           <TextField
             onChange={onTextChange}
             value={playlistName}

@@ -1,25 +1,26 @@
 import {Autocomplete, Button, CircularProgress, TextField,} from "@mui/material";
 import {allGenres, myGenres} from "../constants";
+import * as React from "react";
 import {useState} from "react";
 import dayjs from "dayjs";
 import {extractTracksFromAlbums} from "../Common/requests";
 import AlbumList from "./AlbumList";
 import {API} from "aws-amplify";
+import CustomDay from "../Common/CustomPicker";
 
 const date = "20230106";
-const dayJSdate = dayjs(date);
 
 const EverynoiseDiscovery = () => {
   const [albums, setAlbums] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const [selectedGenres, setSelectedGenres] = useState(myGenres);
-  const [week, setWeek] = useState(0);
+  const [value, setValue] = useState(dayjs());
 
   const scrapeEveryNoise = async () => {
     try {
       setIsLoading(true);
-      const weekFormatted = dayJSdate.add(week, "weeks").format("YYYYMMDD");
+      const weekFormatted = value.format("YYYYMMDD");
       const scrapeUrl = encodeURI(
         `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
           ","
@@ -45,7 +46,11 @@ const EverynoiseDiscovery = () => {
       const albums = await extractTracksFromAlbums(albumPackets);
       setAlbums(albums);
     } catch (e) {
-      window.alert(e.message);
+      if (e.response.status === 401) {
+        localStorage.removeItem("auth");
+      } else {
+        window.alert("Sorry, unhandler error encountered " + e.message);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -53,10 +58,6 @@ const EverynoiseDiscovery = () => {
 
   const onGenreChange = (e, data) => {
     setSelectedGenres(data);
-  };
-
-  const onWeekChange = (e) => {
-    setWeek(parseInt(e.target.value));
   };
 
   // add album URIs into trakcs
@@ -80,35 +81,28 @@ const EverynoiseDiscovery = () => {
     <>
       <div className="control-panel">
         <h4 className="description">Scrape everynoise newreleasesbygenre and generate full albums from its
-          data.</h4>
-
-        <Autocomplete
-          onChange={onGenreChange}
-          selectOnFocus
-          blurOnSelect
-          filterSelectedOptions
-          autoSelect
-          handleHomeEndKeys
-          multiple
-          options={allGenres}
-          value={selectedGenres}
-          renderInput={(params) => (
-            <TextField {...params} placeholder={"Choose genres"} label={"Selected genres"}/>
-          )}
-        />
-        <div className="inputs-row scraper-weeks">
-          <TextField
-            onChange={onWeekChange}
-            value={week}
-            label={"week"}
-            type={"number"}
-            sx={{width: 100}}
+          data.<br/><br/>Select genres, week and click Find.</h4>
+        <div className="scraper-controls">
+          <Autocomplete
+            onChange={onGenreChange}
+            selectOnFocus
+            blurOnSelect
+            filterSelectedOptions
+            autoSelect
+            handleHomeEndKeys
+            multiple
+            options={allGenres}
+            value={selectedGenres}
+            renderInput={(params) => (
+              <TextField {...params} placeholder={"Choose genres"} label={"Selected genres"}/>
+            )}
           />
-          {dayJSdate.add(week, "weeks").format("YYYY MM DD")}
-
-          <Button variant="contained" onClick={scrapeEveryNoise}>
-            scrape albums
-          </Button>
+          <div className="buttons-row">
+            <CustomDay value={value} setValue={setValue}/>
+            <Button variant="contained" onClick={scrapeEveryNoise}>
+              Find new music from {value.format('DD MMM YYYY')}
+            </Button>
+          </div>
         </div>
       </div>
       <AlbumList albums={albums}/>

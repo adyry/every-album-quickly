@@ -66,12 +66,19 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
     >
       {checked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
       {singleTrack && (
-        <div className="cover">
-          <img src={album.images[2].url} alt="cover" />{" "}
-        </div>
+        <>
+
+          {/*<div className="background-image">*/}
+
+          {/*  <img src={album.images[2].url} alt=""  />*/}
+          {/*</div>*/}
+    </>
       )}
       <label htmlFor={uri}>
-        {singleTrack &&
+        {singleTrack && <>
+          <div className="cover">
+            <img src={album.images[2].url} alt="cover" />{" "}
+          </div>{
           artists
             .map(
               ({
@@ -80,7 +87,7 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
                 external_urls: { spotify: artist_link },
               }) => artistName
             )
-            .join(", ") + " - "}
+            .join(", ") + " - "}</>}
         {name}
       </label>
       <input
