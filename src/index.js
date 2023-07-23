@@ -3,11 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { RouterProvider } from "react-router-dom";
-import { createTheme, ThemeProvider } from "@mui/material";
+import {RouterProvider} from "react-router-dom";
+import {createTheme, ThemeProvider} from "@mui/material";
 import * as PropTypes from "prop-types";
-import { Provider } from "react-redux";
-import { store } from "./store/store";
+import {Provider} from "react-redux";
+import store from "./store/store";
+import {PersistGate} from "redux-persist/integration/react";
+import {persistStore} from "redux-persist";
+
+const persistor = persistStore(store);
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -17,10 +22,14 @@ const theme = createTheme({
       main: "#386488",
     },
     secondary: {
-      main: "#c5d0cd",
+      main: "#388885",
     },
     tertiary: {
-      main: "#e7eeed"
+      main: "#edf5f5"
+    },
+    success: {
+      main: "#42ad42",
+      text: "#dee5de"
     },
     components: {
       MuiButton: {
@@ -41,14 +50,16 @@ const theme = createTheme({
   },
 });
 
-RouterProvider.propTypes = { router: PropTypes.any };
+RouterProvider.propTypes = {router: PropTypes.any};
 root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <App />
+        <PersistGate persistor={persistor}>
+          <App/>
+        </PersistGate>
       </Provider>
-    </ThemeProvider>{" "}
+    </ThemeProvider>
   </React.StrictMode>
 );
 

@@ -1,5 +1,7 @@
 export const myGenres = ["new isolationism", "outsider house", "float house"];
 
+export const dateFormat = "YYYYMMDD"
+
 // export const myGenres = [
 //   "new isolationism",
 //   "outsider house",

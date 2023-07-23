@@ -1,5 +1,5 @@
 import {Autocomplete, Button, CircularProgress, TextField,} from "@mui/material";
-import {allGenres, myGenres} from "../constants";
+import {allGenres, dateFormat} from "../constants";
 import * as React from "react";
 import {useState} from "react";
 import dayjs from "dayjs";
@@ -7,20 +7,24 @@ import {extractTracksFromAlbums} from "../Common/requests";
 import AlbumList from "./AlbumList";
 import {API} from "aws-amplify";
 import CustomDay from "../Common/CustomPicker";
+import {useDispatch, useSelector} from "react-redux";
+import {changeGenres} from "../store/genresSlice";
+import {addSearchDate} from "../store/datesSlice";
 
-const date = "20230106";
 
 const EverynoiseDiscovery = () => {
   const [albums, setAlbums] = useState();
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  const [selectedGenres, setSelectedGenres] = useState(myGenres);
+  const selectedGenres = useSelector((state) => state.genres);
+
   const [value, setValue] = useState(dayjs());
 
   const scrapeEveryNoise = async () => {
+    setIsLoading(true);
+    const weekFormatted = value.format(dateFormat);
     try {
-      setIsLoading(true);
-      const weekFormatted = value.format("YYYYMMDD");
       const scrapeUrl = encodeURI(
         `https://everynoise.com/new_releases_by_genre.cgi?genre=${selectedGenres.join(
           ","
@@ -53,11 +57,12 @@ const EverynoiseDiscovery = () => {
       }
     } finally {
       setIsLoading(false);
+      dispatch(addSearchDate(value))
     }
   };
 
   const onGenreChange = (e, data) => {
-    setSelectedGenres(data);
+    dispatch(changeGenres(data))
   };
 
   // add album URIs into trakcs

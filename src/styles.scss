@@ -57,6 +57,7 @@ section {
   padding: $spacing-l;
   border-radius: 10px;
   max-width: 1080px;
+  width: 100%;
 
   .description {
     margin-bottom: $spacing-l;
@@ -118,10 +119,6 @@ section {
 
 .cover {
   height: 64px;
-}
-
-.bottom-panel {
-  justify-content: center;
 }
 
 .track-list {
@@ -190,6 +187,11 @@ section {
   .track-tile {
     padding: 0.5rem;
 
+    label {
+      display: flex;
+      align-items: center;
+      gap: $spacing-s;
+    }
   }
 }
 

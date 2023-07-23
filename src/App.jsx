@@ -95,7 +95,6 @@ export const spotifyRequest = async (...params) => {
 
 const Content = () => {
   const storageAuth = JSON.parse(localStorage.getItem("auth"));
-  console.log(storageAuth);
   const {auth, setAuth} = useContext(AuthCred);
 
   useEffect(() => {
