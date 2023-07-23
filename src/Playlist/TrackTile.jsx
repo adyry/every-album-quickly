@@ -11,6 +11,7 @@ const TrackTile = ({singleTrack, artists, name, preview_url, uri, album}) => {
   const checked = useSelector((state) => state.selected.indexOf(uri) !== -1);
 
   const audioRef = createRef();
+  const playerRef = createRef();
   const [focused, setFocused] = useState(false);
 
   const playPreview = () => {
@@ -22,8 +23,9 @@ const TrackTile = ({singleTrack, artists, name, preview_url, uri, album}) => {
     e.target.focus();
   };
 
-  const stopPreview = () => {
+  const stopPreview = (e) => {
     if (audioRef.current) audioRef.current.pause();
+    e.target.blur();
     setFocused(false);
   };
 
@@ -41,12 +43,15 @@ const TrackTile = ({singleTrack, artists, name, preview_url, uri, album}) => {
         checked: !(e.target.dataset.checked === "true"),
       })
     );
-    if (checked) {
-      stopPreview();
-    } else {
-      playPreview();
-    }
   };
+
+  const focusPlayer = () => {
+    playerRef.current.focus()
+  }
+
+  const blurPlayer = () => {
+    playerRef.current.blur()
+  }
 
   return (
     <div className="track-tile-wrapper">
@@ -63,6 +68,7 @@ const TrackTile = ({singleTrack, artists, name, preview_url, uri, album}) => {
         onFocus={playPreview}
         onBlur={stopPreview}
         onKeyDown={keyCheck}
+        ref={playerRef}
       >
         {singleTrack && (
           <>
@@ -108,8 +114,8 @@ const TrackTile = ({singleTrack, artists, name, preview_url, uri, album}) => {
       </div>
       <div className="play-controls">
         {preview_url && (<>
-            {!focused ? <PlayCircleIcon onClick={playPreview}/> :
-              <PauseCircleIcon onClick={stopPreview}/>}
+            {!focused ? <PlayCircleIcon onClick={focusPlayer}/> :
+              <PauseCircleIcon onClick={blurPlayer}/>}
           </>
         )}
       </div>
