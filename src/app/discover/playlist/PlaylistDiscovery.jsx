@@ -38,9 +38,9 @@ const PlaylistDiscovery = () => {
         />
       </div>
       {playlist && (
-        <div className="analysing-header">
+        <h1 className="analysing-header">
           Now Analysing {playlist.name} by {playlist.owner.display_name}
-        </div>
+        </h1>
       )}
       <TrackList tracks={tracks} />
     </div>

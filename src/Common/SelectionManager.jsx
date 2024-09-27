@@ -1,18 +1,23 @@
 import { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Close, Save } from '@mui/icons-material';
 import {
+  AppBar,
   Button,
   CircularProgress,
   FormControlLabel,
+  IconButton,
   Modal,
   Switch,
   TextField,
+  Toolbar,
 } from '@mui/material';
 import axios from 'axios';
 
 import { AuthCred } from '../app/providers';
 import { clearTracks } from '../store/selectedSlice';
+
+const menuId = 'primary-search-account-menu';
 
 const SelectionManager = () => {
   const selected = useSelector((state) => state.selected);
@@ -20,6 +25,8 @@ const SelectionManager = () => {
   const [publicPlaylist, setPublicPlaylist] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [saveModalOpened, setSaveModalOpened] = useState(false);
+
   const {
     auth: { me },
   } = useContext(AuthCred);
@@ -59,48 +66,96 @@ const SelectionManager = () => {
         )
       );
       setLoading(false);
-      if (result.data) {
+      if (result.length && result[0]?.data) {
+        setSaveModalOpened(false);
         setSuccess(true);
       }
     }
   };
 
   const clear = () => {
+    setSuccess(false);
     dispatch(clearTracks());
   };
 
   return (
     <>
-      <div className="dashboard">
-        <section className="fill-view">
-          <Outlet />
-        </section>
-        <section className="control-panel inputs-row bottom-panel">
+      <AppBar position="fixed" color="default" sx={{ top: 'auto', bottom: 0, left: 0, right: 0 }}>
+        <Toolbar className="justify-between">
+          <Button
+            variant="contained"
+            disabled={selected.length === 0}
+            endIcon={
+              <Save
+                size="large"
+                edge="end"
+                aria-label="Save selected items to a playlist"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                color="inherit"
+              />
+            }
+            onClick={() => setSaveModalOpened(true)}
+          >
+            Save {selected.length} item{selected.length !== 1 && 's'}
+          </Button>
+          <Button
+            variant="contained"
+            color="tertiary"
+            onClick={clear}
+            disabled={selected.length === 0}
+          >
+            Clear Selection
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Modal open={success} onClose={() => setSuccess(false)}>
+        <div className="modal-content relative flex w-[300px] flex-col gap-4">
+          <div className="absolute right-3 top-3">
+            <IconButton onClick={() => setSuccess(false)}>
+              <Close />
+            </IconButton>
+          </div>
+          <h2 className="mb-4 text-xl">Successfully saved your selection to the playlist</h2>
+          <div className="flex gap-4">
+            <Button variant="contained" onClick={() => clear()}>
+              Clear Selection
+            </Button>
+            <Button variant="contained" onClick={() => setSuccess(false)}>
+              Close & Continue
+            </Button>
+          </div>
+        </div>
+      </Modal>
+      <Modal open={saveModalOpened} onClose={() => setSaveModalOpened(false)}>
+        <div className="modal-content relative flex max-w-[500px] flex-col gap-4">
+          <div className="absolute right-3 top-3">
+            <IconButton onClick={() => setSaveModalOpened(false)}>
+              <Close />
+            </IconButton>
+          </div>
+          <h2 className="mb-4 text-xl">Save {selected.length} tracks to a playlist</h2>
+
+          <FormControlLabel
+            control={<Switch onChange={togglePublic} />}
+            label="Make playlist public"
+          />
           <TextField
             onChange={onTextChange}
             value={playlistName}
-            sx={{ minWidth: 260 }}
             label="Name of the playlist"
+            className="w-full"
           />
-          <FormControlLabel control={<Switch onChange={togglePublic} />} label="Public" />
+
           <Button
             variant="contained"
             onClick={addToPlaylist}
             disabled={loading || selected?.length === 0}
+            className="!mt-4 self-end"
           >
-            Save {selected.length} to the Playlist{' '}
+            Save
             {loading && <CircularProgress className="ml-2" size={20} color="secondary" />}
           </Button>
-          <Button variant="contained" color="tertiary" onClick={clear}>
-            Clear Selection
-          </Button>
-        </section>
-      </div>
-      <Modal open={success} onClose={() => setSuccess(false)}>
-        <div className="modal-content">
-          Successufully saved your selection to the playlist
-          <Button variant="contained">Clear Selection</Button>
-          <Button variant="contained">Close Modal</Button>
         </div>
       </Modal>
     </>

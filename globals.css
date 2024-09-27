@@ -7,4 +7,19 @@
     padding: 3px;
     margin: 10px;
   }
+
+  .modal-content {
+    background: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+  }
+}
+
+@layer utilities {
+  .overflow-anywhere {
+    overflow-wrap: anywhere;
+  }
 }

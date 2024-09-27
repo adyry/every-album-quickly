@@ -95,32 +95,31 @@ const TopNav = () => {
   const authorized = storageAuth?.access_token;
 
   return (
-    <div>
-      <header>
-        {authorized && (
-          <div className="flex flex-wrap gap-4 p-4">
-            <Link href={'/discover/enrich'}>
-              <Button variant="outlined">
-                <ExpandIcon /> Add whole albums to your single tracks
-              </Button>
-            </Link>
-            <Link href={'/discover/playlist'}>
-              <Button variant="outlined">
-                <ChecklistIcon />
-                Browse and dig from the playlist
-              </Button>
-            </Link>
-            {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
-          </div>
-        )}
-        {!authorized && (
-          <Button variant="contained" onClick={authorise}>
-            Authorize with Spotify
-          </Button>
-        )}
-      </header>
-    </div>
+    <header className="flex flex-wrap gap-4 pb-4">
+      {authorized && (
+        <>
+          <Link href={'/discover/enrich'}>
+            <Button variant="outlined">
+              <ExpandIcon /> Add whole albums to your single tracks
+            </Button>
+          </Link>
+          <Link href={'/discover/playlist'}>
+            <Button variant="outlined">
+              <ChecklistIcon />
+              Browse and dig from the playlist
+            </Button>
+          </Link>
+          {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
+        </>
+      )}
+      {!authorized && (
+        <Button variant="contained" onClick={authorise}>
+          Authorize with Spotify
+        </Button>
+      )}
+    </header>
   );
 };
+2;
 
 export default TopNav;

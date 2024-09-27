@@ -1,9 +1,9 @@
 import { createRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import PauseCircleIcon from '@mui/icons-material/PauseCircle';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import classNames from 'classnames';
 
 import { selectTrack } from '../../../store/selectedSlice';
 
@@ -13,108 +13,96 @@ const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
 
   const audioRef = createRef();
   const playerRef = createRef();
-  const [focused, setFocused] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   const playPreview = () => {
     if (audioRef.current) audioRef.current.play();
-    setFocused(true);
+    setPlaying(true);
   };
 
-  const focus = (e) => {
-    e.target.focus();
-  };
-
-  const stopPreview = (e) => {
+  const stopPreview = () => {
     if (audioRef.current) audioRef.current.pause();
-    e.target.blur();
-    setFocused(false);
+    setPlaying(false);
   };
 
   const keyCheck = (e) => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
-      addTrack(e);
+      triggerTrack(e);
     }
   };
 
-  const addTrack = (e) => {
+  const triggerTrack = () => {
+    if (checked) {
+      stopPreview();
+    } else {
+      playPreview();
+    }
     dispatch(
       selectTrack({
-        uri: `${e.target.dataset.value}`,
-        checked: !(e.target.dataset.checked === 'true'),
+        uri,
+        checked: !checked,
       })
     );
   };
 
-  const focusPlayer = () => {
-    playerRef.current.focus();
-  };
-
-  const blurPlayer = () => {
-    playerRef.current.blur();
-  };
-
   return (
-    <div className="track-tile-wrapper">
+    <div className="flex border">
       <div
-        className={`track-tile ${focused ? 'focused' : ''} ${checked ? 'checked' : ''}`}
-        onMouseOver={focus}
+        className={classNames('flex flex-1 cursor-pointer', {
+          'bg-neutral-200': !checked && playing,
+          'bg-green-300': checked,
+          'bg-neutral-100': !checked,
+        })}
+        onMouseOver={playPreview}
         onMouseOut={stopPreview}
-        onClick={addTrack}
-        data-checked={checked}
-        data-value={uri}
+        onClick={triggerTrack}
         tabIndex={0}
         onFocus={playPreview}
         onBlur={stopPreview}
         onKeyDown={keyCheck}
         ref={playerRef}
       >
-        {singleTrack && (
-          <>
-            {/*<div className="background-image">*/}
+        <div className="pointer-events-none flex shrink-0 basis-10 items-center justify-center">
+          {checked ? (
+            <CheckBoxIcon sx={{ fontSize: 30 }} />
+          ) : (
+            <CheckBoxOutlineBlankIcon sx={{ fontSize: 30 }} />
+          )}
+        </div>
+        <div className="flex">
+          <div className="mr-2 flex-[0_0_64px] self-center">
+            <img src={album.images[2].url} alt="cover" width={64} height={64} />
+          </div>
+          <div className="overflow-anywhere ms:text-md text-sm">
+            <span>
+              {artists
+                .map(
+                  ({ name: artistName, id, external_urls: { spotify: artist_link } }) => artistName
+                )
+                .join(', ') + ' - '}
+            </span>
+            <span className="italic">{name}</span>
+          </div>
+        </div>
 
-            {/*  <img src={album.images[2].url} alt=""  />*/}
-            {/*</div>*/}
-          </>
-        )}
-        <label htmlFor={uri}>
-          {checked ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
-          <span>
-            {singleTrack && (
-              <>
-                <div className="cover">
-                  <img src={album.images[2].url} alt="cover" />{' '}
-                </div>
-                {artists
-                  .map(
-                    ({ name: artistName, id, external_urls: { spotify: artist_link } }) =>
-                      artistName
-                  )
-                  .join(', ') + ' - '}
-              </>
-            )}
-            {name}
-          </span>
-        </label>
-        <input type="checkbox" value={uri} id={uri} checked={checked} tabIndex="-1" readOnly />
-
-        {preview_url ? (
-          <audio ref={audioRef} src={preview_url} preload="none" key={uri} />
-        ) : (
-          'preview missing'
-        )}
+        {preview_url && <audio ref={audioRef} src={preview_url} preload="none" key={uri} />}
       </div>
-      <div className="play-controls">
-        {preview_url && (
-          <>
-            {!focused ? (
-              <PlayCircleIcon onClick={focusPlayer} />
-            ) : (
-              <PauseCircleIcon onClick={blurPlayer} />
-            )}
-          </>
-        )}
-      </div>
+      {preview_url ? (
+        <div
+          className={classNames(
+            'flex basis-20 items-center justify-center bg-green-200 hover:bg-green-300',
+            { 'bg-green-300': playing }
+          )}
+          onClick={() => (!playing ? playPreview() : stopPreview())}
+        >
+          {!playing ? <PlayCircle sx={{ fontSize: 70 }} /> : <PauseCircle sx={{ fontSize: 70 }} />}
+        </div>
+      ) : (
+        <div className="flex basis-20 items-center justify-center bg-gray-200 text-center hover:bg-green-300">
+          preview missing
+        </div>
+      )}
     </div>
   );
 };

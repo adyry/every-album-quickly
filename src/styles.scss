@@ -12,7 +12,6 @@ h4, h5 {
   margin: 0 0 0.2rem;
 }
 
-.dashboard,
 .fill-view,
 .playlist-discovery,
 .track-list-wrapper,
@@ -160,24 +159,6 @@ h4, h5 {
   }
 }
 
-.track-tile-wrapper {
-  position: relative;
-  display: flex;
-  flex: 1 1 250px;
-  margin-bottom: 3px;
-  margin-top: 3px;
-  align-items: center;
-
-  .play-controls {
-    flex: 0 0 40px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .track-tile {
-    flex: 1;
-  }
-}
 
 .track-tile {
   border: 1px solid $secondary;
@@ -211,14 +192,6 @@ textarea {
   width: 500px;
 }
 
-.modal-content {
-  background: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 300px;
-}
 
 .loader {
   position: fixed;
