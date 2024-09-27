@@ -8,7 +8,7 @@ import TrackList from './TrackList';
 
 const PlaylistDiscovery = () => {
   const [loading, setLoading] = useState(false);
-  const [playlistUri, setPlaylistUri] = useState('5h0RKfezC0vmHziRkXdWzI');
+  const [playlistUri, setPlaylistUri] = useState();
   const [tracks, setTracks] = useState();
   const [playlist, setPlaylist] = useState();
 

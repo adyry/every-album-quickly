@@ -6,7 +6,7 @@ import Image from 'next/image';
 import howToCopyURL from './howtocopyplaylist.jpg';
 
 const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
-  const validateURIURL = () => {};
+  const [error, setError] = useState(null);
 
   const onPlaylistUriChange = (e) => {
     const matchURI = e.target.value.match(/spotify:playlist:.*/);
@@ -18,11 +18,13 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
 
     if (matchURI && matchURI[0]) {
       setPlaylistUri(e.target.value.match(/spotify:playlist:(.*)?/)[1]);
+      setError(null);
     } else if (matchURL && matchURL[0]) {
       setPlaylistUri(e.target.value.match(/https:\/\/open.spotify.com\/playlist\/(.*?)\?/)[1]);
+      setError(null);
     } else {
-      window.alert("Sorry, looks like it's not a correct playlist URL or URI");
       setPlaylistUri(e.target.value);
+      setError("Sorry, looks like it's not a correct playlist URL or URI");
     }
   };
 
@@ -47,6 +49,8 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
             onChange={onPlaylistUriChange}
             // defaultValue={'5h0RKfezC0vmHziRkXdWzI'}
             label="Playlist URI / URL"
+            error={!!error}
+            helperText={error && error}
           />
         </FormControl>
         <Button
@@ -54,6 +58,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
           onClick={onButtonClick}
           disabled={loading}
           title="Read Playlist"
+          className="h-[56px]"
         >
           {!loading ? (
             <PlayArrow />
@@ -65,7 +70,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
 
       <Button className="!mt-1" aria-describedby={id} onClick={handleClick}>
         <Info />
-        How do I find playlist URL?
+        How do I find playlist URL/URI?
       </Button>
       <Popover
         id={id}
@@ -78,7 +83,11 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
         }}
       >
         <div className="p-4">
-          Open the playlist in Spotify and follow the directions on the image
+          Open the playlist in Spotify and follow the directions on the image.
+          <br />
+          Expected URL format - https://open.spotify.com/playlist/xxx
+          <br />
+          Expected URI format - spotify:playlist:xxx
           <Image
             src={howToCopyURL}
             alt='Click three dots, next go to share, select "Copy Playlist URL'
