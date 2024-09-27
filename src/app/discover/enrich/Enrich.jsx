@@ -57,8 +57,8 @@ const Enrich = () => {
       </div>
       {playlist && (
         <div>
-          Found {count} new tracks by adding whole albums to the tracks from "{playlist.name}".
-          Provide a name for your new playlist and use "Add" button below.
+          Found {count} new tracks by adding whole albums to the tracks from &quot;{playlist.name}
+          &quot;. Provide a name for your new playlist and use &quot;Add&quot; button below.
         </div>
       )}
     </>

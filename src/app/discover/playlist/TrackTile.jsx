@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import { selectTrack } from '../../../store/selectedSlice';
 
-const TrackTile = ({ singleTrack, artists, name, preview_url, uri, album }) => {
+const TrackTile = ({ artists, name, preview_url, uri, album }) => {
   const dispatch = useDispatch();
   const checked = useSelector((state) => state.selected.indexOf(uri) !== -1);
 

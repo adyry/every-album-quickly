@@ -1,4 +1,4 @@
-import AlbumTile from "./AlbumTile";
+import AlbumTile from './AlbumTile';
 
 const AlbumList = ({ albums }) => (
   <div className="album-list">
