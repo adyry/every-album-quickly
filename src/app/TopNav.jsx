@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ExpandIcon from '@mui/icons-material/Expand';
-import { Button } from '@mui/material';
+import { AppBar, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import axios from 'axios';
 import Link from 'next/link';
 
@@ -60,6 +60,16 @@ export const spotifyRequest = async (...params) => {
   }
 };
 
+function HideOnScroll({ children }) {
+  const trigger = useScrollTrigger();
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children ?? <div />}
+    </Slide>
+  );
+}
+
 const TopNav = () => {
   const storageAuth = JSON.parse(localStorage.getItem('auth'));
   const { auth, setAuth } = useContext(AuthCred);
@@ -95,31 +105,37 @@ const TopNav = () => {
   const authorized = storageAuth?.access_token;
 
   return (
-    <header className="flex flex-wrap gap-4 pb-4">
-      {authorized && (
-        <>
-          <Link href={'/discover/enrich'}>
-            <Button variant="outlined">
-              <ExpandIcon /> Add whole albums to your single tracks
-            </Button>
-          </Link>
-          <Link href={'/discover/playlist'}>
-            <Button variant="outlined">
-              <ChecklistIcon />
-              Browse and dig from the playlist
-            </Button>
-          </Link>
-          {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
-        </>
-      )}
-      {!authorized && (
-        <Button variant="contained" onClick={authorise}>
-          Authorize with Spotify
-        </Button>
-      )}
-    </header>
+    <>
+      <HideOnScroll>
+        <AppBar position="fixed" color="default">
+          <Toolbar className="flex gap-4">
+            {authorized && (
+              <>
+                <Link href={'/discover/enrich'}>
+                  <Button variant="outlined">
+                    <ExpandIcon /> Expand
+                  </Button>
+                </Link>
+                <Link href={'/discover/playlist'}>
+                  <Button variant="outlined">
+                    <ChecklistIcon />
+                    Explore
+                  </Button>
+                </Link>
+                {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
+              </>
+            )}
+            {!authorized && (
+              <Button variant="contained" onClick={authorise}>
+                Authorize
+              </Button>
+            )}
+          </Toolbar>
+        </AppBar>
+      </HideOnScroll>
+      <div className="h-12" />
+    </>
   );
 };
-2;
 
 export default TopNav;
