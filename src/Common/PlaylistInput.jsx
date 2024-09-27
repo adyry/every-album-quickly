@@ -1,27 +1,18 @@
-import {
-  Button,
-  CircularProgress,
-  FormControl,
-  TextField,
-} from "@mui/material";
+import { Button, CircularProgress, FormControl, TextField } from '@mui/material';
 
 const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
   const onPlaylistUriChange = (e) => {
     const matchURI = e.target.value.match(/spotify:playlist:.*/);
-    const matchURL = e.target.value.match(
-      /https:\/\/open.spotify.com\/playlist\/.*\?/
-    );
+    const matchURL = e.target.value.match(/https:\/\/open.spotify.com\/playlist\/.*\?/);
 
-    if (e.target.value === "") {
+    if (e.target.value === '') {
       return;
     }
 
     if (matchURI && matchURI[0]) {
       setPlaylistUri(e.target.value.match(/spotify:playlist:(.*)?/)[1]);
     } else if (matchURL && matchURL[0]) {
-      setPlaylistUri(
-        e.target.value.match(/https:\/\/open.spotify.com\/playlist\/(.*?)\?/)[1]
-      );
+      setPlaylistUri(e.target.value.match(/https:\/\/open.spotify.com\/playlist\/(.*?)\?/)[1]);
     } else {
       window.alert("Sorry, looks like it's not a correct playlist URL or URI");
       setPlaylistUri(e.target.value);
@@ -33,13 +24,13 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
       <FormControl>
         <TextField
           onChange={onPlaylistUriChange}
-          defaultValue={"5h0RKfezC0vmHziRkXdWzI"}
+          defaultValue={'5h0RKfezC0vmHziRkXdWzI'}
           label="Playlist URI / URL"
           sx={{ width: 310 }}
         />
       </FormControl>
       <Button variant="contained" onClick={onButtonClick} disabled={loading}>
-        read playlist {loading && <CircularProgress color="secondary" />}
+        read playlist {true && <CircularProgress className="ml-2" size={20} color="secondary" />}
       </Button>
     </div>
   );

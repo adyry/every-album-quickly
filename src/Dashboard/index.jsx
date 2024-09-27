@@ -7,11 +7,11 @@ import {Button} from "@mui/material";
 const Dashboard = () => {
   return (
     <div className="dashboard">
-      <Link to={"/playlist"}><Button variant="outlined"><ChecklistIcon/> Browse and dig from the
-        playlist</Button></Link>
-      <Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>
-      <Link to={"/enrich"}><Button variant="outlined"><ExpandIcon/> Add whole albums to your single
-        tracks</Button></Link>
+        <Link to={"/enrich"}><Button variant="outlined"><ExpandIcon/> Add whole albums to your single
+            tracks</Button></Link>
+        <Link to={"/playlist"}><Button variant="outlined"><ChecklistIcon/>Browse and dig from the
+          playlist</Button></Link>
+        {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
     </div>
   );
 };
