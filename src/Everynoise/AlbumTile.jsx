@@ -1,7 +1,8 @@
-import { useDispatch } from "react-redux";
-import { selectTrack } from "../store/selectedSlice";
-import { Button } from "@mui/material";
-import TrackTile from "../Playlist/TrackTile";
+import { useDispatch } from 'react-redux';
+import { Button } from '@mui/material';
+
+import TrackTile from '../app/discover/playlist/TrackTile';
+import { selectTrack } from '../store/selectedSlice';
 
 const AlbumTile = ({ images, tracks, name, artists, label }) => {
   const dispatch = useDispatch();
@@ -13,33 +14,28 @@ const AlbumTile = ({ images, tracks, name, artists, label }) => {
   };
 
   const onAlbumKeyPress = (e) => {
-    if (e.key === "a") {
+    if (e.key === 'a') {
       addAll();
     }
   };
 
   return (
     <div className="album-tile" onKeyPress={onAlbumKeyPress}>
-
       <div className="heading">
         <div className="cover">
-          <img src={images[1].url} alt="cover" />{" "}
+          <img src={images[1].url} alt="cover" />{' '}
         </div>
         <div className="description">
           <div>
-            <h4>{artists.map(
-              ({ name, id, external_urls: { spotify: artist_link } }) =>
-                name + " "
-            )}
-              - <i>{name}</i></h4>
+            <h4>
+              {artists.map(({ name, id, external_urls: { spotify: artist_link } }) => name + ' ')}-{' '}
+              <i>{name}</i>
+            </h4>
           </div>
-          <div><h5>label: {label}</h5></div>
-          <Button
-            onClick={addAll}
-            size="small"
-            variant="contained"
-            color="tertiary"
-          >
+          <div>
+            <h5>label: {label}</h5>
+          </div>
+          <Button onClick={addAll} size="small" variant="contained" color="tertiary">
             select all
           </Button>
         </div>
@@ -51,8 +47,7 @@ const AlbumTile = ({ images, tracks, name, artists, label }) => {
         ))}
       </div>
       <div className="background-image">
-
-        <img src={images[2].url} alt=""  />
+        <img src={images[2].url} alt="" />
       </div>
     </div>
   );

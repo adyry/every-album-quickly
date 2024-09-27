@@ -1,8 +1,8 @@
-import React from 'react';
-
 import { Providers } from './providers';
 
 import '../../globals.css';
+import '../index.css';
+import '../styles.scss';
 
 export const metadata = {
   title: 'Every Album Quickly',
@@ -14,9 +14,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <div id="root">
-          <Providers>{children}</Providers>
-        </div>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

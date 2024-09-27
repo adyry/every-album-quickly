@@ -20,7 +20,8 @@
   ],
   "rules": {
     "react/prop-types": "off",
-    "no-unused-vars": "off",
+    "no-undef": "error",
+    "no-unused-vars": "warn",
     "jsx-quotes": [
       "error",
       "prefer-double"
@@ -29,20 +30,38 @@
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "error",
     // Import sorting configuration
-    "simple-import-sort/imports": ["warn", {
-      "groups": [
-        // React packages go first, then other 3rd party packages
-        ["^react", "^@?\\w"],
-        // Our external packages
-        ["^@gn-audio(.*)"],
-        // Internal imports
-        ["^(api|assets|common|components|composables|graphql-types|lib|src|temp|utils)(.*)"],
-        // Internal imports relative to the current module
-        ["^\\.\\.(?!/?$)", "^\\.\\./?$", "^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
-        // Style imports
-        ["^.+\\.?(config|css)$"]
-      ]
-    }],
+    "simple-import-sort/imports": [
+      "warn",
+      {
+        "groups": [
+          // React packages go first, then other 3rd party packages
+          [
+            "^react",
+            "^@?\\w"
+          ],
+          // Our external packages
+          [
+            "^@gn-audio(.*)"
+          ],
+          // Internal imports
+          [
+            "^(api|assets|common|components|composables|graphql-types|lib|src|temp|utils)(.*)"
+          ],
+          // Internal imports relative to the current module
+          [
+            "^\\.\\.(?!/?$)",
+            "^\\.\\./?$",
+            "^\\./(?=.*/)(?!/?$)",
+            "^\\.(?!/?$)",
+            "^\\./?$"
+          ],
+          // Style imports
+          [
+            "^.+\\.?(config|css)$"
+          ]
+        ]
+      }
+    ],
     "simple-import-sort/exports": "warn"
   },
   "parserOptions": {

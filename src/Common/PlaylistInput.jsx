@@ -1,3 +1,4 @@
+import { PlayArrow } from '@mui/icons-material';
 import { Button, CircularProgress, FormControl, TextField } from '@mui/material';
 
 const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
@@ -20,17 +21,20 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
   };
 
   return (
-    <div className="playlist-input">
-      <FormControl>
+    <div className="flex">
+      <FormControl className="w-full max-w-[500px]">
         <TextField
           onChange={onPlaylistUriChange}
           defaultValue={'5h0RKfezC0vmHziRkXdWzI'}
           label="Playlist URI / URL"
-          sx={{ width: 310 }}
         />
       </FormControl>
-      <Button variant="contained" onClick={onButtonClick} disabled={loading}>
-        read playlist {true && <CircularProgress className="ml-2" size={20} color="secondary" />}
+      <Button variant="contained" onClick={onButtonClick} disabled={loading} title="Read Playlist">
+        {!loading ? (
+          <PlayArrow />
+        ) : (
+          <CircularProgress className="ml-2" size={20} color="secondary" />
+        )}
       </Button>
     </div>
   );

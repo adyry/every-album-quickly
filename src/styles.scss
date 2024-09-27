@@ -12,21 +12,6 @@ h4, h5 {
   margin: 0 0 0.2rem;
 }
 
-.App {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-header {
-  padding: 1rem;
-
-  a {
-    display: inline-block;
-    padding: 0.5rem 0.5rem 0.5rem 0;
-  }
-}
-
 .dashboard,
 .fill-view,
 .playlist-discovery,
@@ -37,19 +22,6 @@ h4, h5 {
   flex-direction: column;
 }
 
-.dashboard {
-  a {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-}
-
-
-section {
-  padding: 3px;
-  margin: 10px;
-}
 
 .control-panel {
   margin: $spacing-l auto;
@@ -72,13 +44,6 @@ section {
     @media screen and (max-width: 550px) {
       flex-direction: column;
     }
-  }
-
-
-  .playlist-input {
-    display: flex;
-    align-items: stretch;
-    gap: $spacing-m;
   }
 
 

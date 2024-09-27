@@ -89,7 +89,7 @@ const SelectionManager = () => {
             disabled={loading || selected?.length === 0}
           >
             Save {selected.length} to the Playlist{' '}
-            {loading && <CircularProgress className="pl-4" color="secondary" />}
+            {loading && <CircularProgress className="ml-2" size={20} color="secondary" />}
           </Button>
           <Button variant="contained" color="tertiary" onClick={clear}>
             Clear Selection

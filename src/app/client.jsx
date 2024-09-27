@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic';
 
-const App = dynamic(() => import('../App'), { ssr: false });
+const Component = dynamic(() => import('./Home'), { ssr: false });
 
 export function ClientOnly() {
-  return <App />;
+  return <Component />;
 }
