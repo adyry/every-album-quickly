@@ -1,11 +1,11 @@
 import { useContext, useEffect } from 'react';
+import { Home } from '@mui/icons-material'; // Amplify.configure(awsconfig);
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ExpandIcon from '@mui/icons-material/Expand';
 import { AppBar, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import axios from 'axios';
-import Link from 'next/link';
+import Link from 'next/link'; // import {Amplify} from "aws-amplify";
 
-// import {Amplify} from "aws-amplify";
 // import awsconfig from "./aws-exports";
 import { AuthCred } from './providers';
 
@@ -109,6 +109,11 @@ const TopNav = () => {
       <HideOnScroll>
         <AppBar position="fixed" color="default">
           <Toolbar className="flex gap-4">
+            <Link href={'/'}>
+              <Button variant="outlined">
+                <Home />
+              </Button>
+            </Link>
             {authorized && (
               <>
                 <Link href={'/discover/enrich'}>
@@ -133,7 +138,7 @@ const TopNav = () => {
           </Toolbar>
         </AppBar>
       </HideOnScroll>
-      <div className="h-12" />
+      <div className="h-14" />
     </>
   );
 };
