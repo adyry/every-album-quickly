@@ -1,4 +1,3 @@
-import { createRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PauseCircle, PlayCircle } from '@mui/icons-material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
@@ -7,22 +6,16 @@ import classNames from 'classnames';
 
 import { selectTrack } from '../../../store/selectedSlice';
 
-const TrackTile = ({ artists, name, preview_url, uri, album }) => {
+const TrackTile = ({ artists, name, preview_url, uri, album, setAudioSrc, audioSrc }) => {
   const dispatch = useDispatch();
   const checked = useSelector((state) => state.selected.indexOf(uri) !== -1);
 
-  const audioRef = createRef();
-  const playerRef = createRef();
-  const [playing, setPlaying] = useState(false);
-
   const playPreview = () => {
-    if (audioRef.current) audioRef.current.play();
-    setPlaying(true);
+    setAudioSrc(preview_url);
   };
 
   const stopPreview = () => {
-    if (audioRef.current) audioRef.current.pause();
-    setPlaying(false);
+    setAudioSrc(null);
   };
 
   const keyCheck = (e) => {
@@ -46,6 +39,8 @@ const TrackTile = ({ artists, name, preview_url, uri, album }) => {
     );
   };
 
+  const playing = audioSrc === preview_url;
+
   return (
     <div className="flex border">
       <div
@@ -61,7 +56,6 @@ const TrackTile = ({ artists, name, preview_url, uri, album }) => {
         onFocus={playPreview}
         onBlur={stopPreview}
         onKeyDown={keyCheck}
-        ref={playerRef}
       >
         <div className="pointer-events-none flex shrink-0 basis-10 items-center justify-center">
           {checked ? (
@@ -85,13 +79,11 @@ const TrackTile = ({ artists, name, preview_url, uri, album }) => {
             <span className="italic">{name}</span>
           </div>
         </div>
-
-        {preview_url && <audio ref={audioRef} src={preview_url} preload="none" key={uri} />}
       </div>
       {preview_url ? (
         <div
           className={classNames(
-            'flex basis-20 items-center justify-center bg-green-200 hover:bg-green-300',
+            'flex basis-20 cursor-pointer items-center justify-center bg-green-200 hover:bg-green-300',
             { 'bg-green-300': playing }
           )}
           onClick={() => (!playing ? playPreview() : stopPreview())}
