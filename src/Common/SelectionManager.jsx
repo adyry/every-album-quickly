@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useContext, useState } from "react";
-import { AuthCred } from "../App";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import {
   Button,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { clearTracks } from "../store/selectedSlice";
+import { changeName } from "../store/playlistNameSlice";
 
 const SelectionManager = () => {
   const selected = useSelector((state) => state.selected);
@@ -19,16 +19,12 @@ const SelectionManager = () => {
   const [publicPlaylist, setPublicPlaylist] = useState(true);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const {
-    auth: { me },
-  } = useContext(AuthCred);
+  const me = useSelector((state) => state.me);
 
-  const [playlistName, setPlaylistName] = useState(
-    `Discovered ${new Date().toDateString()}`
-  );
+  const playlistName = useSelector((state) => state.playlistName);
 
   const onTextChange = (e) => {
-    setPlaylistName(e.target.value);
+    changeName(e.target.value);
   };
 
   const togglePublic = (e) => {

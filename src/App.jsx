@@ -1,15 +1,24 @@
-import {createBrowserRouter, Route, RouterProvider, Routes, useNavigate,} from "react-router-dom";
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  Routes,
+  useNavigate,
+} from "react-router-dom";
 import "./styles.scss";
 import axios from "axios";
-import {createContext, useContext, useEffect, useState} from "react";
+import { useEffect } from "react";
 import Dashboard from "./Dashboard";
-import {Button} from "@mui/material";
-import {Amplify} from "aws-amplify";
+import { Button } from "@mui/material";
+import { Amplify } from "aws-amplify";
 import awsconfig from "./aws-exports";
 import EnrichPage from "./Enrich/Enrich.page";
 import SelectionManager from "./Common/SelectionManager";
 import EverynoiseDiscovery from "./Everynoise/EverynoiseDiscovery";
 import PlaylistDiscovery from "./Playlist/PlaylistDiscovery";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuth } from "./store/authSlice";
+import { setMe } from "./store/meSlice";
 
 Amplify.configure(awsconfig);
 
@@ -44,19 +53,19 @@ function generateRandomString(length) {
   return text;
 }
 
-const stateKey = "spotify_auth_state";
+// const stateKey = "spotify_auth_state";
 
 const AuthCallback = () => {
   const params = getHashParams();
   const navigate = useNavigate();
-
-  const {setAuth} = useContext(AuthCred);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    setAuth(params);
-    localStorage.setItem("auth", JSON.stringify(params));
+    dispatch(setAuth(params));
+
+    // localStorage.setItem("auth", JSON.stringify(params));
     navigate("/");
-  }, [navigate, params, setAuth]);
+  }, [dispatch, navigate, params]);
 };
 
 const authorise = () => {
@@ -65,7 +74,7 @@ const authorise = () => {
 
   const state = generateRandomString(16);
 
-  localStorage.setItem(stateKey, state);
+  // localStorage.setItem(stateKey, state);
   const scope =
     "user-read-private user-read-email playlist-modify-private playlist-modify-public";
 
@@ -80,45 +89,38 @@ const authorise = () => {
 };
 
 export const spotifyRequest = async (...params) => {
-
   try {
-    const {data} = await axios.get(params);
+    const { data } = await axios.get(params);
     return data;
   } catch (e) {
     if (e.response.status === 401) {
-      localStorage.removeItem("auth");
+      authorise();
     } else {
-      window.alert("Sorry, unhandler error encountered " + e.message);
+      window.alert("Sorry, unhandled error encountered " + e.message);
     }
   }
-}
+};
 
 const Content = () => {
-  const storageAuth = JSON.parse(localStorage.getItem("auth"));
-  const {auth, setAuth} = useContext(AuthCred);
+  // const storageAuth = JSON.parse(localStorage.getItem("auth"));
+  const auth = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getMe = async () => {
-      if (
-        storageAuth?.access_token &&
-        (!auth?.auth || !auth?.auth?.access_token)
-      ) {
+      if (auth?.tokens?.access_token && !auth.me) {
         try {
-          const {data} = await axios.get(`https://api.spotify.com/v1/me`, {
+          const { data } = await axios.get(`https://api.spotify.com/v1/me`, {
             headers: {
-              Authorization: "Bearer " + storageAuth?.access_token,
+              Authorization: "Bearer " + auth?.tokens?.access_token,
             },
           });
-
           if (data) {
-            setAuth({auth: storageAuth, me: data});
-            axios.defaults.headers["Authorization"] =
-              "Bearer " + storageAuth.access_token;
+            dispatch(setMe(data));
           }
         } catch (e) {
           if (e.response.status === 401) {
-            setAuth({auth: null, me: null});
-            localStorage.removeItem("auth");
+            dispatch(setMe(null));
           } else {
             window.alert("Sorry, unhandler error encountered " + e.message);
           }
@@ -127,27 +129,25 @@ const Content = () => {
     };
 
     getMe();
-  }, [auth, setAuth, storageAuth]);
+  }, [auth, dispatch]);
 
-  const authorized = storageAuth?.access_token;
+  const authorized = auth;
 
   return (
     <div className="App">
       <header className="app-header">
-        {authorized && <Dashboard/>}
-        {!authorized && (
-          <Button variant="contained" onClick={authorise}>
-            Authorize with Spotify
-          </Button>
-        )}
+        <Button variant="contained" onClick={authorise}>
+          {authorized && "Re"}Authorize with Spotify
+        </Button>
+        {authorized && <Dashboard />}
       </header>
       {authorized && (
         <>
           <Routes>
-            <Route element={<SelectionManager/>}>
-              <Route path={"/playlist"} element={<PlaylistDiscovery/>}/>
-              <Route path={"/everynoise"} element={<EverynoiseDiscovery/>}/>
-              <Route path={"/enrich"} element={<EnrichPage/>}/>
+            <Route element={<SelectionManager />}>
+              <Route path={"/playlist"} element={<PlaylistDiscovery />} />
+              <Route path={"/everynoise"} element={<EverynoiseDiscovery />} />
+              <Route path={"/enrich"} element={<EnrichPage />} />
             </Route>
           </Routes>
         </>
@@ -157,23 +157,15 @@ const Content = () => {
 };
 
 const router = createBrowserRouter([
-  {path: "/callback/*", element: <AuthCallback/>},
+  { path: "/callback/*", element: <AuthCallback /> },
   {
     path: "*",
-    element: <Content/>,
+    element: <Content />,
   },
 ]);
 
-export const AuthCred = createContext(null);
-
 function App() {
-  const [auth, setAuth] = useState({me: null, auth: null});
-
-  return (
-    <AuthCred.Provider value={{auth, setAuth}}>
-      <RouterProvider router={router}/>
-    </AuthCred.Provider>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
