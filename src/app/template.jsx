@@ -4,7 +4,7 @@ import TopNav from './TopNav';
 
 export default function Template({ children }) {
   return (
-    <div className="mx-auto max-w-[1200px] p-4">
+    <div className="mx-auto min-h-screen max-w-[500px] p-4 md:max-w-screen-xl">
       <TopNav />
       {children}
     </div>

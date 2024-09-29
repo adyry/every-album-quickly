@@ -22,6 +22,9 @@ const TrackTile = ({ artists, name, preview_url, uri, album, setAudioSrc, audioS
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       triggerTrack(e);
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      stopPreview();
     }
   };
 

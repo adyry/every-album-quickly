@@ -27,21 +27,10 @@ const theme = createTheme({
       main: '#42ad42',
       text: '#dee5de',
     },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          // root: ({ ownerState }) => ({
-          //   ...(ownerState.variant === "contained" &&
-          //     ownerState.color === "primary" && {
-          //       backgroundColor: "#202020",
-          //       color: "#fff",
-          //     }),
-          // }),
-          /* root: {
-                                        height: "3.4rem",
-                                      },*/
-        },
-      },
+  },
+  breakpoints: {
+    values: {
+      lg: 1280,
     },
   },
 });

@@ -5,6 +5,7 @@ import {
   AppBar,
   Button,
   CircularProgress,
+  Container,
   FormControlLabel,
   IconButton,
   Modal,
@@ -81,33 +82,38 @@ const SelectionManager = () => {
   return (
     <>
       <AppBar position="fixed" color="default" sx={{ top: 'auto', bottom: 0, left: 0, right: 0 }}>
-        <Toolbar className="justify-between">
-          <Button
-            variant="contained"
-            disabled={selected.length === 0}
-            endIcon={
-              <Save
-                size="large"
-                edge="end"
-                aria-label="Save selected items to a playlist"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                color="inherit"
-              />
-            }
-            onClick={() => setSaveModalOpened(true)}
-          >
-            Save {selected.length} item{selected.length !== 1 && 's'}
-          </Button>
-          <Button
-            variant="contained"
-            color="tertiary"
-            onClick={clear}
-            disabled={selected.length === 0}
-          >
-            Clear Selection
-          </Button>
-        </Toolbar>
+        <Container maxWidth="lg" disableGutters>
+          <Toolbar className="justify-between">
+            <Button
+              variant="contained"
+              disabled={selected.length === 0}
+              endIcon={
+                <Save
+                  size="large"
+                  edge="end"
+                  aria-label="Save selected items to a playlist"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  color="inherit"
+                />
+              }
+              onClick={() => setSaveModalOpened(true)}
+            >
+              Save&nbsp;<span className="xs:hidden">({selected.length})</span>
+              <span className="max-xs:hidden">
+                {selected.length} item{selected.length !== 1 && 's'}
+              </span>
+            </Button>
+            <Button
+              variant="contained"
+              color="tertiary"
+              onClick={clear}
+              disabled={selected.length === 0}
+            >
+              Clear Selection
+            </Button>
+          </Toolbar>
+        </Container>
       </AppBar>
       <Modal open={success} onClose={() => setSuccess(false)}>
         <div className="modal-content relative flex w-[300px] flex-col gap-4">

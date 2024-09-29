@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import { Home } from '@mui/icons-material'; // Amplify.configure(awsconfig);
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import ExpandIcon from '@mui/icons-material/Expand';
-import { AppBar, Button, Slide, Toolbar, useScrollTrigger } from '@mui/material';
+import { AppBar, Button, Container, Slide, Toolbar, useScrollTrigger } from '@mui/material';
 import axios from 'axios';
 import Link from 'next/link'; // import {Amplify} from "aws-amplify";
 
@@ -108,34 +108,37 @@ const TopNav = () => {
     <>
       <HideOnScroll>
         <AppBar position="fixed" color="default">
-          <Toolbar className="flex gap-4">
-            <Link href={'/'}>
-              <Button variant="outlined">
+          <Container maxWidth="lg" disableGutters>
+            <Toolbar className="max-w-scren-xl flex gap-4">
+              <Button
+                variant="outlined"
+                linkComponent={Link}
+                href={'/'}
+                aria-label="Home page
+              "
+              >
                 <Home />
               </Button>
-            </Link>
-            {authorized && (
-              <>
-                <Link href={'/discover/enrich'}>
-                  <Button variant="outlined">
+              {authorized && (
+                <>
+                  <Button variant="outlined" linkComponent={Link} href={'/discover/enrich'}>
                     <ExpandIcon /> Expand
                   </Button>
-                </Link>
-                <Link href={'/discover/playlist'}>
-                  <Button variant="outlined">
+
+                  <Button variant="outlined" linkComponent={Link} href={'/discover/playlist'}>
                     <ChecklistIcon />
                     Explore
                   </Button>
-                </Link>
-                {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
-              </>
-            )}
-            {!authorized && (
-              <Button variant="contained" onClick={authorise}>
-                Authorize
-              </Button>
-            )}
-          </Toolbar>
+                  {/*<Link to={"/everynoise"}><Button variant="outlined"><ManageSearchIcon/> Find new albums by genre</Button></Link>*/}
+                </>
+              )}
+              {!authorized && (
+                <Button variant="contained" onClick={authorise}>
+                  Authorize
+                </Button>
+              )}
+            </Toolbar>
+          </Container>
         </AppBar>
       </HideOnScroll>
       <div className="h-14" />

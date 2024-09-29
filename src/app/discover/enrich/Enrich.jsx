@@ -8,7 +8,7 @@ import { extractTracksFromAlbums, getPlaylist } from '../../../Common/requests';
 import { selectTracks } from '../../../store/selectedSlice';
 
 const Enrich = () => {
-  const [playlistUri, setPlaylistUri] = useState('5h0RKfezC0vmHziRkXdWzI');
+  const [playlistUri, setPlaylistUri] = useState('');
   const [loading, setLoading] = useState(false);
   const [playlist, setPlaylist] = useState();
   const [count, setCount] = useState();
@@ -47,12 +47,15 @@ const Enrich = () => {
 
   return (
     <>
-      <div className="control-panel">
-        <h4 className="description">Add whole albums to your single tracks</h4>
+      <div className="control-panel mb-4">
+        <h4 className="description">
+          Create a new playlist with all albums containing the track from the original playlist
+        </h4>
         <PlaylistInput
           setPlaylistUri={setPlaylistUri}
           onButtonClick={readPlaylist}
           loading={loading}
+          playlistUri={playlistUri}
         />
       </div>
       {playlist && (

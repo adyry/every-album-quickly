@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 import howToCopyURL from './howtocopyplaylist.jpg';
 
-const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
+const PlaylistInput = ({ setPlaylistUri, playlistUri, onButtonClick, loading }) => {
   const [error, setError] = useState(null);
 
   const onPlaylistUriChange = (e) => {
@@ -56,7 +56,7 @@ const PlaylistInput = ({ setPlaylistUri, onButtonClick, loading }) => {
         <Button
           variant="contained"
           onClick={onButtonClick}
-          disabled={loading}
+          disabled={loading || !playlistUri}
           title="Read Playlist"
           className="h-[56px]"
         >
