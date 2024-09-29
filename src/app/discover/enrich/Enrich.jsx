@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Alert } from '@mui/material';
 
 import PlaylistInput from '../../../Common/PlaylistInput';
 import { extractTracksFromAlbums, getPlaylist } from '../../../Common/requests';
@@ -47,21 +48,49 @@ const Enrich = () => {
 
   return (
     <>
-      <div className="control-panel mb-4">
-        <h4 className="description">
-          Create a new playlist with all albums containing the track from the original playlist
-        </h4>
-        <PlaylistInput
-          setPlaylistUri={setPlaylistUri}
-          onButtonClick={readPlaylist}
-          loading={loading}
-          playlistUri={playlistUri}
-        />
-      </div>
-      {playlist && (
-        <div>
-          Found {count} new tracks by adding whole albums to the tracks from &quot;{playlist.name}
-          &quot;. Provide a name for your new playlist and use &quot;Add&quot; button below.
+      {playlist ? (
+        <>
+          <h1 className="pb-4 text-xl">Extending playlist:</h1>
+          <div className="control-panel max-xs:max-w-[250px] mb-8">
+            <div className="block md:flex">
+              <div className="flex-[0_1_425px] self-center">
+                <img src={playlist.images[0].url} alt="Playlist image" width={425} height={425} />
+              </div>
+              <div className="overflow-anywhere max-md:pt-4 md:pl-4">
+                <span className="text-xs">Playlist name:</span>
+                <br />
+                <span>{playlist.name}</span>
+                <br />
+                <span className="text-xs">Playlist author:</span>
+                <br />
+                <span className="italic">{playlist.owner.display_name}</span>
+                <div className="max-md:hidden">
+                  <span className="text-xs">Tracks count:</span>
+                  <br />
+                  <span className="italic">{playlist.tracks.total}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h2 className="pb-4 text-xl">
+            <Alert severity="success">
+              Found {count} new tracks by adding whole albums to the tracks from &quot;
+              {playlist.name}
+              &quot;. Save it using using Save button below.
+            </Alert>
+          </h2>
+        </>
+      ) : (
+        <div className="control-panel mb-4">
+          <h4 className="description">
+            Create a new playlist with all albums containing the track from the original playlist
+          </h4>
+          <PlaylistInput
+            setPlaylistUri={setPlaylistUri}
+            onButtonClick={readPlaylist}
+            loading={loading}
+            playlistUri={playlistUri}
+          />
         </div>
       )}
     </>

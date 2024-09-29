@@ -124,7 +124,6 @@ const TopNav = () => {
                   <Button variant="outlined" linkComponent={Link} href={'/discover/enrich'}>
                     <ExpandIcon /> Expand
                   </Button>
-
                   <Button variant="outlined" linkComponent={Link} href={'/discover/playlist'}>
                     <ChecklistIcon />
                     Explore

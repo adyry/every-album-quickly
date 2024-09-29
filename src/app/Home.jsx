@@ -1,10 +1,13 @@
 import { useContext } from 'react';
+import ChecklistIcon from '@mui/icons-material/Checklist'; // import {Amplify} from "aws-amplify";
+import ExpandIcon from '@mui/icons-material/Expand';
+import { Button } from '@mui/material';
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link'; // import {Amplify} from "aws-amplify";
 
 import bgRecords from './bg-records.jpg';
-import { AuthCred } from './providers'; // import {Amplify} from "aws-amplify";
+import { AuthCred } from './providers';
 // import {Amplify} from "aws-amplify";
 // import awsconfig from "./aws-exports";
 
@@ -68,24 +71,30 @@ const Home = () => {
     <main className="">
       <div className="relative z-10">
         {me ? (
-          <div>
+          <div className="control-panel">
             Welcome to Every Album Quickly. This is an application meant for record digging on
             spotify.
             <br />
             <br />
             Quickly browse through tracks from the selected playlist and save them to the new
             spotify playlist, using{' '}
-            <Link className="text-blue-700 hover:text-blue-950" href={'/discover/playlist'}>
+            <Button
+              variant="outlined"
+              size="small"
+              linkComponent={Link}
+              href={'/discover/playlist'}
+            >
+              <ChecklistIcon />
               Explore
-            </Link>
-            option
+            </Button>
+            &nbsp; option
             <br />
             <br />
             Create a playlist with full albums based on the single tracks playlist using{' '}
-            <Link className="text-blue-700 hover:text-blue-950" href={'/discover/expand'}>
-              Expand
-            </Link>
-            option
+            <Button variant="outlined" size="small" linkComponent={Link} href={'/discover/enrich'}>
+              <ExpandIcon /> Expand
+            </Button>
+            &nbsp; option
             <br />
             <br />
           </div>
